@@ -224,7 +224,7 @@ Tests use **Hardhat mock FHE** locally; Sepolia uses Zama's live fhEVM coprocess
 |-----|----------|
 | [docs/README.md](docs/README.md) | Documentation index |
 | [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Non-technical walkthrough |
-| [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) | Developers setup |
+| [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) | Deploy web + relayer on Vercel |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design |
 | [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md) | Sepolia addresses |
 | [docs/PRIVACY_AND_COMPLIANCE.md](docs/PRIVACY_AND_COMPLIANCE.md) | Privacy boundary |

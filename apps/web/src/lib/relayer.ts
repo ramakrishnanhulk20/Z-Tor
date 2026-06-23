@@ -1,5 +1,8 @@
 export const RELAYER_URL =
-  process.env.NEXT_PUBLIC_RELAYER_URL ?? "http://localhost:8787";
+  process.env.NEXT_PUBLIC_RELAYER_URL ??
+  (typeof window !== "undefined"
+    ? `${window.location.origin}/api/relayer`
+    : "http://localhost:8787");
 
 export type RelayerInfo = {
   relayer: `0x${string}`;

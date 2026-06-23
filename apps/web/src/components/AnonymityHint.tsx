@@ -1,6 +1,6 @@
 "use client";
 
-import { useBlockNumber, useReadContract } from "wagmi";
+import { useReadContract } from "wagmi";
 import { poolAbi } from "@/config/contracts";
 
 type Props = {
@@ -38,16 +38,12 @@ function privacyLabel(count: number): { headline: string; detail: string } {
 }
 
 export function AnonymityHint({ poolAddress, poolLabel, compact }: Props) {
-  const { data: blockNumber } = useBlockNumber({ watch: true });
-
   const { data: nextIndex, isLoading } = useReadContract({
     address: poolAddress,
     abi: poolAbi,
     functionName: "nextIndex",
     query: {
       enabled: Boolean(poolAddress),
-      // Re-read after each block + periodic poll (wagmi caches reads aggressively).
-      blockNumber,
       refetchInterval: 12_000,
     },
   });

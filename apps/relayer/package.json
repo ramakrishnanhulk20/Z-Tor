@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "description": "Z-Tor withdrawal relayer — submits withdraw transactions so recipient addresses never need gas (Sepolia testnet)",
+  "exports": {
+    "./src/relay.mjs": "./src/relay.mjs"
+  },
   "scripts": {
     "start": "node --env-file-if-exists=.env src/server.mjs"
   },

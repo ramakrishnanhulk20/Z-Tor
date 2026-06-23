@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   allowedDevOrigins: ["192.168.31.250"],
-  transpilePackages: ["framer-motion", "@zama-fhe/react-sdk", "@zama-fhe/sdk"],
+  transpilePackages: ["framer-motion", "@zama-fhe/react-sdk", "@zama-fhe/sdk", "@z-tor/relayer"],
   webpack: (config, { isServer }) => {
     config.externals.push("pino-pretty", "lokijs", "encoding");
     config.resolve.alias = {
