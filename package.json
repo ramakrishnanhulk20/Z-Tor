@@ -1,0 +1,23 @@
+{
+  "name": "z-tor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Confidential fixed-denomination pools on Sepolia — Zama fhEVM + note-based unlink",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "compile": "npm run compile -w @z-tor/contracts",
+    "test": "npm run test -w @z-tor/contracts",
+    "lint": "npm run lint -w @z-tor/contracts",
+    "build:circuit": "npm run build:circuit -w @z-tor/contracts",
+    "dev:web": "npm run dev -w @z-tor/web",
+    "dev:relayer": "npm run start -w @z-tor/relayer",
+    "build:web": "npm run build:circuit -w @z-tor/contracts && npm run build -w @z-tor/web"
+  },
+  "license": "MIT"
+}

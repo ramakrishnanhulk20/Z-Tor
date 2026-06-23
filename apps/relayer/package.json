@@ -1,0 +1,13 @@
+{
+  "name": "@z-tor/relayer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Z-Tor withdrawal relayer — submits withdraw transactions so recipient addresses never need gas (Sepolia testnet)",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.mjs"
+  },
+  "dependencies": {
+    "viem": "^2.21.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2022"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "target": "es2022"
+  },
+  "exclude": ["node_modules"],
+  "files": ["./hardhat.config.ts", "./externals.d.ts"],
+  "include": ["test/**/*", "deploy/**/*", "types/"]
+}

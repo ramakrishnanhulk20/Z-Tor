@@ -1,0 +1,46 @@
+# fhEVM / Hardhat
+fhevmTemp
+artifacts
+cache
+coverage
+dist
+types
+deployments/localhost
+deployments/hardhat
+.coverage_*
+
+# ZK toolchain (regenerate: npm run build:circuit)
+**/circuits/build/
+.tools
+
+# Node
+node_modules
+*.log
+.pnp.*
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Next.js
+.next
+out
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea
+.vscode/*
+!.vscode/extensions.json
+
+# Locks (workspaces use root package-lock)
+pnpm-lock.yaml
+yarn.lock
+
+# Temp
+tmp
+_template-ref
+
+# Local favicon drop folder — assets live in apps/web/public/favicon/
+/public/

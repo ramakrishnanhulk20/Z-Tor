@@ -1,0 +1,419 @@
+{
+  "address": "0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2",
+  "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "PoolAlreadyRegistered",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UnauthorizedRegistrar",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "UnknownPool",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "ZeroPool",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "poolId",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "name": "PoolRegistered",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "name": "RegistrarUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "allPoolIds",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "poolId",
+          "type": "string"
+        }
+      ],
+      "name": "poolExists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "poolId",
+          "type": "string"
+        }
+      ],
+      "name": "poolFor",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "poolId",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "name": "register",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "registrars",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "poolId",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "pool",
+          "type": "address"
+        }
+      ],
+      "name": "setPool",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "allowed",
+          "type": "bool"
+        }
+      ],
+      "name": "setRegistrar",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x726319aab97aa45ea896fa1b5da993c04b9d50a4232f75c6051ee52068e5bfb6",
+  "receipt": {
+    "to": null,
+    "from": "0xd57D8F8A615F35133D8121e58F4ed778A4F612E9",
+    "contractAddress": "0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2",
+    "transactionIndex": 76,
+    "gasUsed": "643238",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000800000000000000004000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000200000000000000000000000000000020000000000000000000800000000000000000000000000000000400000100000000000000000000000000000000000000000000000000000020000000000000000000000000000002000000000000040000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0x7cc4b8e8018a3c47a4f168bdeee3ec43d984166e7e86d1ed6c70bee977e32b86",
+    "transactionHash": "0x726319aab97aa45ea896fa1b5da993c04b9d50a4232f75c6051ee52068e5bfb6",
+    "logs": [
+      {
+        "transactionIndex": 76,
+        "blockNumber": 11041855,
+        "transactionHash": "0x726319aab97aa45ea896fa1b5da993c04b9d50a4232f75c6051ee52068e5bfb6",
+        "address": "0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2",
+        "topics": [
+          "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+          "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "0x000000000000000000000000d57d8f8a615f35133d8121e58f4ed778a4f612e9"
+        ],
+        "data": "0x",
+        "logIndex": 303,
+        "blockHash": "0x7cc4b8e8018a3c47a4f168bdeee3ec43d984166e7e86d1ed6c70bee977e32b86"
+      }
+    ],
+    "blockNumber": 11041855,
+    "cumulativeGasUsed": "10547630",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 3,
+  "solcInputHash": "9fb1c80c9a621dd679c5d385b526b9fa",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.27+commit.40a35a09\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"OwnableInvalidOwner\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"OwnableUnauthorizedAccount\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"PoolAlreadyRegistered\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnauthorizedRegistrar\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"UnknownPool\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"ZeroPool\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"string\",\"name\":\"poolId\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"PoolRegistered\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"allowed\",\"type\":\"bool\"}],\"name\":\"RegistrarUpdated\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"allPoolIds\",\"outputs\":[{\"internalType\":\"string[]\",\"name\":\"\",\"type\":\"string[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"poolId\",\"type\":\"string\"}],\"name\":\"poolExists\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"poolId\",\"type\":\"string\"}],\"name\":\"poolFor\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"poolId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"register\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"registrars\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"poolId\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"pool\",\"type\":\"address\"}],\"name\":\"setPool\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"allowed\",\"type\":\"bool\"}],\"name\":\"setRegistrar\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"errors\":{\"OwnableInvalidOwner(address)\":[{\"details\":\"The owner is not a valid owner account. (eg. `address(0)`)\"}],\"OwnableUnauthorizedAccount(address)\":[{\"details\":\"The caller account is not authorized to perform an operation.\"}]},\"kind\":\"dev\",\"methods\":{\"owner()\":{\"details\":\"Returns the address of the current owner.\"},\"renounceOwnership()\":{\"details\":\"Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner.\"},\"transferOwnership(address)\":{\"details\":\"Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.\"}},\"title\":\"Official pool directory\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"setPool(string,address)\":{\"notice\":\"Replace a pool address after a redeploy (owner only).\"}},\"notice\":\"Maps human-readable pool ids (e.g. \\\"eth-0.1\\\") to pool addresses so the web app discovers deployments from a single address.\",\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/ZTorRegistry.sol\":\"ZTorRegistry\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"none\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":800},\"remappings\":[]},\"sources\":{\"@openzeppelin/contracts/access/Ownable.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.0) (access/Ownable.sol)\\n\\npragma solidity ^0.8.20;\\n\\nimport {Context} from \\\"../utils/Context.sol\\\";\\n\\n/**\\n * @dev Contract module which provides a basic access control mechanism, where\\n * there is an account (an owner) that can be granted exclusive access to\\n * specific functions.\\n *\\n * The initial owner is set to the address provided by the deployer. This can\\n * later be changed with {transferOwnership}.\\n *\\n * This module is used through inheritance. It will make available the modifier\\n * `onlyOwner`, which can be applied to your functions to restrict their use to\\n * the owner.\\n */\\nabstract contract Ownable is Context {\\n    address private _owner;\\n\\n    /**\\n     * @dev The caller account is not authorized to perform an operation.\\n     */\\n    error OwnableUnauthorizedAccount(address account);\\n\\n    /**\\n     * @dev The owner is not a valid owner account. (eg. `address(0)`)\\n     */\\n    error OwnableInvalidOwner(address owner);\\n\\n    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\\n\\n    /**\\n     * @dev Initializes the contract setting the address provided by the deployer as the initial owner.\\n     */\\n    constructor(address initialOwner) {\\n        if (initialOwner == address(0)) {\\n            revert OwnableInvalidOwner(address(0));\\n        }\\n        _transferOwnership(initialOwner);\\n    }\\n\\n    /**\\n     * @dev Throws if called by any account other than the owner.\\n     */\\n    modifier onlyOwner() {\\n        _checkOwner();\\n        _;\\n    }\\n\\n    /**\\n     * @dev Returns the address of the current owner.\\n     */\\n    function owner() public view virtual returns (address) {\\n        return _owner;\\n    }\\n\\n    /**\\n     * @dev Throws if the sender is not the owner.\\n     */\\n    function _checkOwner() internal view virtual {\\n        if (owner() != _msgSender()) {\\n            revert OwnableUnauthorizedAccount(_msgSender());\\n        }\\n    }\\n\\n    /**\\n     * @dev Leaves the contract without owner. It will not be possible to call\\n     * `onlyOwner` functions. Can only be called by the current owner.\\n     *\\n     * NOTE: Renouncing ownership will leave the contract without an owner,\\n     * thereby disabling any functionality that is only available to the owner.\\n     */\\n    function renounceOwnership() public virtual onlyOwner {\\n        _transferOwnership(address(0));\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Can only be called by the current owner.\\n     */\\n    function transferOwnership(address newOwner) public virtual onlyOwner {\\n        if (newOwner == address(0)) {\\n            revert OwnableInvalidOwner(address(0));\\n        }\\n        _transferOwnership(newOwner);\\n    }\\n\\n    /**\\n     * @dev Transfers ownership of the contract to a new account (`newOwner`).\\n     * Internal function without access restriction.\\n     */\\n    function _transferOwnership(address newOwner) internal virtual {\\n        address oldOwner = _owner;\\n        _owner = newOwner;\\n        emit OwnershipTransferred(oldOwner, newOwner);\\n    }\\n}\\n\",\"keccak256\":\"0xff6d0bb2e285473e5311d9d3caacb525ae3538a80758c10649a4d61029b017bb\",\"license\":\"MIT\"},\"@openzeppelin/contracts/utils/Context.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n// OpenZeppelin Contracts (last updated v5.0.1) (utils/Context.sol)\\n\\npragma solidity ^0.8.20;\\n\\n/**\\n * @dev Provides information about the current execution context, including the\\n * sender of the transaction and its data. While these are generally available\\n * via msg.sender and msg.data, they should not be accessed in such a direct\\n * manner, since when dealing with meta-transactions the account sending and\\n * paying for execution may not be the actual sender (as far as an application\\n * is concerned).\\n *\\n * This contract is only required for intermediate, library-like contracts.\\n */\\nabstract contract Context {\\n    function _msgSender() internal view virtual returns (address) {\\n        return msg.sender;\\n    }\\n\\n    function _msgData() internal view virtual returns (bytes calldata) {\\n        return msg.data;\\n    }\\n\\n    function _contextSuffixLength() internal view virtual returns (uint256) {\\n        return 0;\\n    }\\n}\\n\",\"keccak256\":\"0x493033a8d1b176a037b2cc6a04dad01a5c157722049bbecf632ca876224dd4b2\",\"license\":\"MIT\"},\"contracts/ZTorRegistry.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\r\\npragma solidity ^0.8.24;\\r\\n\\r\\nimport {Ownable} from \\\"@openzeppelin/contracts/access/Ownable.sol\\\";\\r\\n\\r\\n/// @title Official pool directory\\r\\n/// @notice Maps human-readable pool ids (e.g. \\\"eth-0.1\\\") to pool addresses\\r\\n/// so the web app discovers deployments from a single address.\\r\\ncontract ZTorRegistry is Ownable {\\r\\n    mapping(bytes32 => address) private _pools;\\r\\n    string[] private _poolIds;\\r\\n    mapping(address => bool) public registrars;\\r\\n\\r\\n    event PoolRegistered(string poolId, address indexed pool);\\r\\n    event RegistrarUpdated(address indexed account, bool allowed);\\r\\n\\r\\n    error PoolAlreadyRegistered();\\r\\n    error ZeroPool();\\r\\n    error UnknownPool();\\r\\n    error UnauthorizedRegistrar();\\r\\n\\r\\n    constructor() Ownable(msg.sender) {}\\r\\n\\r\\n    function setRegistrar(address account, bool allowed) external onlyOwner {\\r\\n        registrars[account] = allowed;\\r\\n        emit RegistrarUpdated(account, allowed);\\r\\n    }\\r\\n\\r\\n    function register(string calldata poolId, address pool) external {\\r\\n        if (msg.sender != owner() && !registrars[msg.sender]) revert UnauthorizedRegistrar();\\r\\n        if (pool == address(0)) revert ZeroPool();\\r\\n        bytes32 key = keccak256(bytes(poolId));\\r\\n        if (_pools[key] != address(0)) revert PoolAlreadyRegistered();\\r\\n        _pools[key] = pool;\\r\\n        _poolIds.push(poolId);\\r\\n        emit PoolRegistered(poolId, pool);\\r\\n    }\\r\\n\\r\\n    /// @notice Replace a pool address after a redeploy (owner only).\\r\\n    function setPool(string calldata poolId, address pool) external onlyOwner {\\r\\n        if (pool == address(0)) revert ZeroPool();\\r\\n        bytes32 key = keccak256(bytes(poolId));\\r\\n        if (_pools[key] == address(0)) revert UnknownPool();\\r\\n        _pools[key] = pool;\\r\\n        emit PoolRegistered(poolId, pool);\\r\\n    }\\r\\n\\r\\n    function poolExists(string calldata poolId) external view returns (bool) {\\r\\n        return _pools[keccak256(bytes(poolId))] != address(0);\\r\\n    }\\r\\n\\r\\n    function poolFor(string calldata poolId) external view returns (address) {\\r\\n        address pool = _pools[keccak256(bytes(poolId))];\\r\\n        if (pool == address(0)) revert UnknownPool();\\r\\n        return pool;\\r\\n    }\\r\\n\\r\\n    function allPoolIds() external view returns (string[] memory) {\\r\\n        return _poolIds;\\r\\n    }\\r\\n}\\r\\n\",\"keccak256\":\"0xf227c03dfeed9c633d54233fecd0ef574154cbc49b256ae75f49efcd78e0255b\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x6080604052348015600e575f5ffd5b503380603357604051631e4fbdf760e01b81525f600482015260240160405180910390fd5b603a81603f565b50608e565b5f80546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b610a318061009b5f395ff3fe608060405234801561000f575f5ffd5b50600436106100b9575f3560e01c8063715018a6116100725780638da5cb5b116100585780638da5cb5b14610177578063c1bf1dcf14610187578063f2fde38b1461019a575f5ffd5b8063715018a61461014d57806389aeca7614610155575f5ffd5b80634138e0a7116100a25780634138e0a71461010257806347df9bf114610115578063647989d014610138575f5ffd5b80631e59c529146100bd5780631fb4eb1d146100d2575b5f5ffd5b6100d06100cb366004610730565b6101ad565b005b6100e56100e0366004610780565b610327565b6040516001600160a01b0390911681526020015b60405180910390f35b6100d0610110366004610730565b610385565b610128610123366004610780565b610470565b60405190151581526020016100f9565b6101406104b9565b6040516100f991906107bf565b6100d061058d565b610128610163366004610843565b60036020525f908152604090205460ff1681565b5f546001600160a01b03166100e5565b6100d061019536600461085c565b6105a0565b6100d06101a8366004610843565b610606565b5f546001600160a01b031633148015906101d65750335f9081526003602052604090205460ff16155b156101f457604051631a88efbf60e11b815260040160405180910390fd5b6001600160a01b03811661021b5760405163686b659960e11b815260040160405180910390fd5b5f838360405161022c929190610895565b60408051918290039091205f818152600160205291909120549091506001600160a01b03161561026f576040516359f4180f60e11b815260040160405180910390fd5b5f8181526001602081905260408220805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0386161790556002805491820181559091527f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ace016102dd84868361093c565b50816001600160a01b03167f35960c0c0b58b81f05f041692b9ee27419c24ecd6e4bb3107ea31aaf6dae399c85856040516103199291906109f6565b60405180910390a250505050565b5f5f60015f858560405161033c929190610895565b604080519182900390912082526020820192909252015f20546001600160a01b031690508061037e5760405163f7139e3360e01b815260040160405180910390fd5b9392505050565b61038d610648565b6001600160a01b0381166103b45760405163686b659960e11b815260040160405180910390fd5b5f83836040516103c5929190610895565b60408051918290039091205f818152600160205291909120549091506001600160a01b03166104075760405163f7139e3360e01b815260040160405180910390fd5b5f8181526001602052604090819020805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b03851690811790915590517f35960c0c0b58b81f05f041692b9ee27419c24ecd6e4bb3107ea31aaf6dae399c9061031990879087906109f6565b5f5f6001600160a01b031660015f858560405161048e929190610895565b604080519182900390912082526020820192909252015f20546001600160a01b031614159392505050565b60606002805480602002602001604051908101604052809291908181526020015f905b82821015610584578382905f5260205f200180546104f9906108b8565b80601f0160208091040260200160405190810160405280929190818152602001828054610525906108b8565b80156105705780601f1061054757610100808354040283529160200191610570565b820191905f5260205f20905b81548152906001019060200180831161055357829003601f168201915b5050505050815260200190600101906104dc565b50505050905090565b610595610648565b61059e5f610674565b565b6105a8610648565b6001600160a01b0382165f81815260036020908152604091829020805460ff191685151590811790915591519182527faa29e9c7319872059973646686bcb05675a1351529119ca980b4ad90e73d7264910160405180910390a25050565b61060e610648565b6001600160a01b03811661063c57604051631e4fbdf760e01b81525f60048201526024015b60405180910390fd5b61064581610674565b50565b5f546001600160a01b0316331461059e5760405163118cdaa760e01b8152336004820152602401610633565b5f80546001600160a01b0383811673ffffffffffffffffffffffffffffffffffffffff19831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b5f5f83601f8401126106e0575f5ffd5b50813567ffffffffffffffff8111156106f7575f5ffd5b60208301915083602082850101111561070e575f5ffd5b9250929050565b80356001600160a01b038116811461072b575f5ffd5b919050565b5f5f5f60408486031215610742575f5ffd5b833567ffffffffffffffff811115610758575f5ffd5b610764868287016106d0565b9094509250610777905060208501610715565b90509250925092565b5f5f60208385031215610791575f5ffd5b823567ffffffffffffffff8111156107a7575f5ffd5b6107b3858286016106d0565b90969095509350505050565b5f602082016020835280845180835260408501915060408160051b8601019250602086015f5b8281101561083757603f19878603018452815180518087528060208301602089015e5f602082890101526020601f19601f830116880101965050506020820191506020840193506001810190506107e5565b50929695505050505050565b5f60208284031215610853575f5ffd5b61037e82610715565b5f5f6040838503121561086d575f5ffd5b61087683610715565b91506020830135801515811461088a575f5ffd5b809150509250929050565b818382375f9101908152919050565b634e487b7160e01b5f52604160045260245ffd5b600181811c908216806108cc57607f821691505b6020821081036108ea57634e487b7160e01b5f52602260045260245ffd5b50919050565b601f82111561093757805f5260205f20601f840160051c810160208510156109155750805b601f840160051c820191505b81811015610934575f8155600101610921565b50505b505050565b67ffffffffffffffff831115610954576109546108a4565b6109688361096283546108b8565b836108f0565b5f601f841160018114610999575f85156109825750838201355b5f19600387901b1c1916600186901b178355610934565b5f83815260208120601f198716915b828110156109c857868501358255602094850194600190920191016109a8565b50868210156109e4575f1960f88860031b161c19848701351681555b505060018560011b0183555050505050565b60208152816020820152818360408301375f818301604090810191909152601f909201601f1916010191905056fea164736f6c634300081b000a",
+  "deployedBytecode": "0x608060405234801561000f575f5ffd5b50600436106100b9575f3560e01c8063715018a6116100725780638da5cb5b116100585780638da5cb5b14610177578063c1bf1dcf14610187578063f2fde38b1461019a575f5ffd5b8063715018a61461014d57806389aeca7614610155575f5ffd5b80634138e0a7116100a25780634138e0a71461010257806347df9bf114610115578063647989d014610138575f5ffd5b80631e59c529146100bd5780631fb4eb1d146100d2575b5f5ffd5b6100d06100cb366004610730565b6101ad565b005b6100e56100e0366004610780565b610327565b6040516001600160a01b0390911681526020015b60405180910390f35b6100d0610110366004610730565b610385565b610128610123366004610780565b610470565b60405190151581526020016100f9565b6101406104b9565b6040516100f991906107bf565b6100d061058d565b610128610163366004610843565b60036020525f908152604090205460ff1681565b5f546001600160a01b03166100e5565b6100d061019536600461085c565b6105a0565b6100d06101a8366004610843565b610606565b5f546001600160a01b031633148015906101d65750335f9081526003602052604090205460ff16155b156101f457604051631a88efbf60e11b815260040160405180910390fd5b6001600160a01b03811661021b5760405163686b659960e11b815260040160405180910390fd5b5f838360405161022c929190610895565b60408051918290039091205f818152600160205291909120549091506001600160a01b03161561026f576040516359f4180f60e11b815260040160405180910390fd5b5f8181526001602081905260408220805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b0386161790556002805491820181559091527f405787fa12a823e0f2b7631cc41b3ba8828b3321ca811111fa75cd3aa3bb5ace016102dd84868361093c565b50816001600160a01b03167f35960c0c0b58b81f05f041692b9ee27419c24ecd6e4bb3107ea31aaf6dae399c85856040516103199291906109f6565b60405180910390a250505050565b5f5f60015f858560405161033c929190610895565b604080519182900390912082526020820192909252015f20546001600160a01b031690508061037e5760405163f7139e3360e01b815260040160405180910390fd5b9392505050565b61038d610648565b6001600160a01b0381166103b45760405163686b659960e11b815260040160405180910390fd5b5f83836040516103c5929190610895565b60408051918290039091205f818152600160205291909120549091506001600160a01b03166104075760405163f7139e3360e01b815260040160405180910390fd5b5f8181526001602052604090819020805473ffffffffffffffffffffffffffffffffffffffff19166001600160a01b03851690811790915590517f35960c0c0b58b81f05f041692b9ee27419c24ecd6e4bb3107ea31aaf6dae399c9061031990879087906109f6565b5f5f6001600160a01b031660015f858560405161048e929190610895565b604080519182900390912082526020820192909252015f20546001600160a01b031614159392505050565b60606002805480602002602001604051908101604052809291908181526020015f905b82821015610584578382905f5260205f200180546104f9906108b8565b80601f0160208091040260200160405190810160405280929190818152602001828054610525906108b8565b80156105705780601f1061054757610100808354040283529160200191610570565b820191905f5260205f20905b81548152906001019060200180831161055357829003601f168201915b5050505050815260200190600101906104dc565b50505050905090565b610595610648565b61059e5f610674565b565b6105a8610648565b6001600160a01b0382165f81815260036020908152604091829020805460ff191685151590811790915591519182527faa29e9c7319872059973646686bcb05675a1351529119ca980b4ad90e73d7264910160405180910390a25050565b61060e610648565b6001600160a01b03811661063c57604051631e4fbdf760e01b81525f60048201526024015b60405180910390fd5b61064581610674565b50565b5f546001600160a01b0316331461059e5760405163118cdaa760e01b8152336004820152602401610633565b5f80546001600160a01b0383811673ffffffffffffffffffffffffffffffffffffffff19831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b5f5f83601f8401126106e0575f5ffd5b50813567ffffffffffffffff8111156106f7575f5ffd5b60208301915083602082850101111561070e575f5ffd5b9250929050565b80356001600160a01b038116811461072b575f5ffd5b919050565b5f5f5f60408486031215610742575f5ffd5b833567ffffffffffffffff811115610758575f5ffd5b610764868287016106d0565b9094509250610777905060208501610715565b90509250925092565b5f5f60208385031215610791575f5ffd5b823567ffffffffffffffff8111156107a7575f5ffd5b6107b3858286016106d0565b90969095509350505050565b5f602082016020835280845180835260408501915060408160051b8601019250602086015f5b8281101561083757603f19878603018452815180518087528060208301602089015e5f602082890101526020601f19601f830116880101965050506020820191506020840193506001810190506107e5565b50929695505050505050565b5f60208284031215610853575f5ffd5b61037e82610715565b5f5f6040838503121561086d575f5ffd5b61087683610715565b91506020830135801515811461088a575f5ffd5b809150509250929050565b818382375f9101908152919050565b634e487b7160e01b5f52604160045260245ffd5b600181811c908216806108cc57607f821691505b6020821081036108ea57634e487b7160e01b5f52602260045260245ffd5b50919050565b601f82111561093757805f5260205f20601f840160051c810160208510156109155750805b601f840160051c820191505b81811015610934575f8155600101610921565b50505b505050565b67ffffffffffffffff831115610954576109546108a4565b6109688361096283546108b8565b836108f0565b5f601f841160018114610999575f85156109825750838201355b5f19600387901b1c1916600186901b178355610934565b5f83815260208120601f198716915b828110156109c857868501358255602094850194600190920191016109a8565b50868210156109e4575f1960f88860031b161c19848701351681555b505060018560011b0183555050505050565b60208152816020820152818360408301375f818301604090810191909152601f909201601f1916010191905056fea164736f6c634300081b000a",
+  "devdoc": {
+    "errors": {
+      "OwnableInvalidOwner(address)": [
+        {
+          "details": "The owner is not a valid owner account. (eg. `address(0)`)"
+        }
+      ],
+      "OwnableUnauthorizedAccount(address)": [
+        {
+          "details": "The caller account is not authorized to perform an operation."
+        }
+      ]
+    },
+    "kind": "dev",
+    "methods": {
+      "owner()": {
+        "details": "Returns the address of the current owner."
+      },
+      "renounceOwnership()": {
+        "details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby disabling any functionality that is only available to the owner."
+      },
+      "transferOwnership(address)": {
+        "details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+      }
+    },
+    "title": "Official pool directory",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "setPool(string,address)": {
+        "notice": "Replace a pool address after a redeploy (owner only)."
+      }
+    },
+    "notice": "Maps human-readable pool ids (e.g. \"eth-0.1\") to pool addresses so the web app discovers deployments from a single address.",
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 42380,
+        "contract": "contracts/ZTorRegistry.sol:ZTorRegistry",
+        "label": "_owner",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_address"
+      },
+      {
+        "astId": 50146,
+        "contract": "contracts/ZTorRegistry.sol:ZTorRegistry",
+        "label": "_pools",
+        "offset": 0,
+        "slot": "1",
+        "type": "t_mapping(t_bytes32,t_address)"
+      },
+      {
+        "astId": 50149,
+        "contract": "contracts/ZTorRegistry.sol:ZTorRegistry",
+        "label": "_poolIds",
+        "offset": 0,
+        "slot": "2",
+        "type": "t_array(t_string_storage)dyn_storage"
+      },
+      {
+        "astId": 50153,
+        "contract": "contracts/ZTorRegistry.sol:ZTorRegistry",
+        "label": "registrars",
+        "offset": 0,
+        "slot": "3",
+        "type": "t_mapping(t_address,t_bool)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_array(t_string_storage)dyn_storage": {
+        "base": "t_string_storage",
+        "encoding": "dynamic_array",
+        "label": "string[]",
+        "numberOfBytes": "32"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_bytes32": {
+        "encoding": "inplace",
+        "label": "bytes32",
+        "numberOfBytes": "32"
+      },
+      "t_mapping(t_address,t_bool)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => bool)",
+        "numberOfBytes": "32",
+        "value": "t_bool"
+      },
+      "t_mapping(t_bytes32,t_address)": {
+        "encoding": "mapping",
+        "key": "t_bytes32",
+        "label": "mapping(bytes32 => address)",
+        "numberOfBytes": "32",
+        "value": "t_address"
+      },
+      "t_string_storage": {
+        "encoding": "bytes",
+        "label": "string",
+        "numberOfBytes": "32"
+      }
+    }
+  }
+}

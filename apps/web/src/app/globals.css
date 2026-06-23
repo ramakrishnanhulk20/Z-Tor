@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply min-h-screen bg-ivory font-sans text-ink antialiased;
+}
+
+::selection {
+  background: rgba(201, 100, 66, 0.25);
+  color: #181818;
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-6xl px-6;
+  }
+
+  .eyebrow {
+    @apply text-xs font-medium uppercase tracking-[0.14em] text-muted;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-6 py-3 text-sm font-medium text-paper transition-colors duration-200 hover:bg-ink/80 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-ink/20 px-6 py-3 text-sm font-medium text-ink transition-colors duration-200 hover:border-ink/50 hover:bg-paper disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-coral {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-coral px-6 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-coral-dark disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .card {
+    @apply rounded-2xl border border-line bg-paper;
+  }
+
+  .input-field {
+    @apply w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink transition-colors duration-200 placeholder:text-muted/60 focus:border-ink/40 focus:outline-none;
+  }
+
+  .link-arrow {
+    @apply inline-flex items-center gap-1.5 text-sm font-medium text-coral transition-colors duration-200 hover:text-coral-dark;
+  }
+
+  .prose-section p {
+    @apply mt-4 leading-relaxed text-ink-soft;
+  }
+
+  .glass-card {
+    @apply rounded-2xl border border-line/80 bg-paper/90 shadow-card backdrop-blur-sm;
+  }
+
+  .gradient-ring {
+    @apply relative overflow-hidden rounded-2xl;
+  }
+
+  .gradient-ring::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 rounded-2xl;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(201, 100, 66, 0.35), transparent 50%, rgba(24, 24, 24, 0.08));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .stat-value {
+    @apply font-serif text-3xl font-medium tracking-tight text-ink;
+  }
+
+  .flow-panel {
+    @apply rounded-2xl border border-line bg-ivory/60 p-6 md:p-8;
+  }
+}
