@@ -1,5 +1,16 @@
 # Z-Tor — Deployments
 
+## Live app (Sepolia testnet)
+
+| Service | URL |
+|---------|-----|
+| Web app | [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app) |
+| Relayer (built-in) | [https://z-tor-web.vercel.app/api/relayer/info](https://z-tor-web.vercel.app/api/relayer/info) |
+
+Hosted on Vercel (Next.js + relayer API routes). Connect MetaMask to **Sepolia**.
+
+---
+
 ## Sepolia (chain id 11155111)
 
 ### Phase 3c — deposit callback + withdraw payout fixes (current)

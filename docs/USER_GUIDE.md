@@ -20,7 +20,7 @@ Think of it like dropping identical envelopes into a box and picking one up late
 
 1. Install [MetaMask](https://metamask.io/) and add **Sepolia** testnet
 2. Get free Sepolia ETH from a [faucet](https://sepoliafaucet.com/)
-3. Open the Z-Tor app and click **Connect wallet**
+3. Open [Z-Tor](https://z-tor-web.vercel.app) and click **Connect wallet**
 
 Everything runs on **Sepolia testnet**. Tokens have **no real value**.
 
@@ -116,6 +116,7 @@ Common questions about notes, delays, wallets, and old deployments.
 
 ## Need help?
 
+- Live app: [z-tor-web.vercel.app](https://z-tor-web.vercel.app)
 - In-app: [FAQ](/faq) and [How it works](/how-it-works)
 - Technical: [ARCHITECTURE.md](./ARCHITECTURE.md)
 - Contract addresses: [DEPLOYMENTS.md](./DEPLOYMENTS.md)

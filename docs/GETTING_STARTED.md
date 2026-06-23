@@ -1,5 +1,7 @@
 # Getting started (developers)
 
+**Try the live app:** [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app) (Sepolia testnet, no local setup needed).
+
 ## Prerequisites
 
 - **Node.js 20+**

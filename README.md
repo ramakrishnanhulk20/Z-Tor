@@ -2,7 +2,7 @@
 
 **Confidential fixed-denomination transfer pools on Ethereum Sepolia** — combining note-based unlinkability (mixer-style ZK proofs) with **Zama fhEVM** for encrypted on-chain economics and **ERC-7984** confidential tokens.
 
-> **Status:** Core flow working on Sepolia testnet (shield → deposit → wait → withdraw). Testnet only — no mainnet.
+> **Status:** Live on Sepolia at [z-tor-web.vercel.app](https://z-tor-web.vercel.app). Core flow: shield → deposit → wait → withdraw. Testnet only — no mainnet.
 
 ---
 
@@ -10,8 +10,10 @@
 
 | Service | URL |
 |---------|-----|
-| Web app | [http://localhost:3000](http://localhost:3000) (after `npm run dev:web`) |
-| Relayer (optional) | [http://localhost:8787](http://localhost:8787) |
+| **Live app (Sepolia)** | [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app) |
+| Relayer info | [https://z-tor-web.vercel.app/api/relayer/info](https://z-tor-web.vercel.app/api/relayer/info) |
+| Local dev | [http://localhost:3000](http://localhost:3000) (after `npm run dev:web`) |
+| Local relayer | [http://localhost:8787](http://localhost:8787) (optional) |
 
 Connect **MetaMask** to **Sepolia**. You need a little test ETH for gas.
 

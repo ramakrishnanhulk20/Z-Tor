@@ -2,6 +2,8 @@
 
 Next.js frontend for Z-Tor: wallet connection, Shield, deposit, withdraw, stats, disclosure.
 
+**Live:** [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app)
+
 ## Layout
 
 ```

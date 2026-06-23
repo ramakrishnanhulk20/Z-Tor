@@ -2,6 +2,8 @@
 
 Start here if you are new to the project.
 
+**Live app (Sepolia):** [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app)
+
 ## For users (non-technical)
 
 | Document | What it covers |

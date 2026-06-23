@@ -2,6 +2,8 @@
 
 One Vercel project hosts **both** the Next.js app and the **relayer** (as API routes at `/api/relayer/*`). You do not need a second server for gasless withdraw on production.
 
+**Current production:** [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app) · relayer: [https://z-tor-web.vercel.app/api/relayer/info](https://z-tor-web.vercel.app/api/relayer/info)
+
 Local dev can still use a separate relayer: `npm run dev:relayer` on port 8787.
 
 ---
@@ -37,9 +39,9 @@ In **Project → Settings → Environment Variables**, add:
 | `NEXT_PUBLIC_ZTOR_REGISTRY` | `0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2` | Yes |
 | `NEXT_PUBLIC_DEPLOY_BLOCK` | `11114155` | Yes |
 | `NEXT_PUBLIC_ZTOR_FACTORY` | `0x24c4E6dBe47AE08a87C4B7A53a29107CffD96E95` | Yes |
-| `NEXT_PUBLIC_RELAYER_URL` | *(leave empty)* | No |
+| `NEXT_PUBLIC_RELAYER_URL` | Optional — omit on Vercel (uses `/api/relayer` on same domain); `http://localhost:8787` locally |
 
-If `NEXT_PUBLIC_RELAYER_URL` is empty, the app uses **`https://your-domain.vercel.app/api/relayer`** automatically.
+If `NEXT_PUBLIC_RELAYER_URL` is empty, the app uses **`https://z-tor-web.vercel.app/api/relayer`** (or your deployment’s origin + `/api/relayer`).
 
 ### Server-only (relayer — never expose to the client)
 
@@ -58,9 +60,9 @@ Mark `RELAYER_PRIVATE_KEY` as **Sensitive**. Do not prefix it with `NEXT_PUBLIC_
 
 Click **Deploy**. After the build:
 
-- App: `https://your-project.vercel.app`
-- Relayer info: `https://your-project.vercel.app/api/relayer/info`
-- Relayer relay: `POST https://your-project.vercel.app/api/relayer/relay`
+- App: `https://z-tor-web.vercel.app` (example — yours may differ)
+- Relayer info: `https://z-tor-web.vercel.app/api/relayer/info`
+- Relayer relay: `POST https://z-tor-web.vercel.app/api/relayer/relay`
 
 On the **Withdraw** page, “Through a relayer” should show as online if `/api/relayer/info` returns Sepolia chain id `11155111`.
 
