@@ -44,3 +44,4 @@ _template-ref
 
 # Local favicon drop folder — assets live in apps/web/public/favicon/
 /public/
+.vercel
