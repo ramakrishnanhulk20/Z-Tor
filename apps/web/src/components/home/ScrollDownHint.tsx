@@ -7,7 +7,7 @@ export function ScrollDownHint() {
     <motion.a
       href="#how-it-works"
       aria-label="Scroll to see how it works"
-      className="group absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-muted"
+      className="group inline-flex flex-col items-center gap-2 text-muted"
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.2, duration: 0.6 }}

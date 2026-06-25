@@ -116,7 +116,7 @@ function HeroIllustration() {
 
 export function Hero() {
   return (
-    <section className="relative border-b border-line">
+    <section className="border-b border-line">
       <div className="container-site grid items-center gap-12 py-20 md:grid-cols-[1.1fr_0.9fr] md:py-28">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -156,7 +156,9 @@ export function Hero() {
         </motion.div>
       </div>
 
-      <ScrollDownHint />
+      <div className="flex justify-center pb-8 pt-2 md:pb-10">
+        <ScrollDownHint />
+      </div>
 
       <div className="border-t border-line bg-paper">
         <div className="container-site flex flex-wrap items-center justify-center gap-x-10 gap-y-2 py-4">
