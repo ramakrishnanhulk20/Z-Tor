@@ -29,7 +29,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const poseidon = await deploy("PoseidonT3", { from: deployer, log: true });
 
   const verifier = await deploy("Groth16Verifier", { from: deployer, log: true });
-  const stats = await deploy("ZTorLiquidityStats", { from: deployer, log: true });
+  const stats = await deploy("ZTorLiquidityStats", { from: deployer, log: true, reset: true });
   const registry = await deploy("ZTorRegistry", { from: deployer, log: true });
 
   let cUsdc = SEPOLIA_C_USDC;

@@ -56,7 +56,8 @@ Go to **Deposit**:
 |------|--------------|------------------------|
 | Balance check | "Checking confidential balance…" | App reads your encrypted token balance (may ask for a wallet signature to decrypt locally) |
 | Top up (only if needed) | "Minting…" or "Shielding…" | If you are short, mints test tokens and shields them — **skipped if you already have enough from the Shield page** |
-| Deposit | "Confirm deposit in wallet" | One transaction on Zama's cWETH/cUSDC wrapper forwards encrypted tokens into the Z-Tor pool |
+| Deposit | "Confirm deposit in wallet" | A transaction on Zama's cWETH/cUSDC wrapper forwards your encrypted tokens into the Z-Tor pool |
+| Confirm amount | "Confirming amount… confirm in wallet" | Zama publicly decrypts a yes/no check that your deposit equals the pool size, then a second quick transaction makes your note spendable (wrong amounts auto-refund) |
 
 **Why MetaMask shows cWETH or cUSDC:** Z-Tor pools only accept confidential tokens. You sign against Zama's official wrapper contract; it forwards your deposit to the Z-Tor pool looked up from the registry. MetaMask labels the contract you interact with — the token wrapper — not the pool itself.
 

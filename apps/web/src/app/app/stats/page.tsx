@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useZamaSDK } from "@zama-fhe/react-sdk";
 import { usePublicClient, useReadContract } from "wagmi";
 import { PageShell } from "@/components/PageShell";
 import { InfoBanner } from "@/components/ui/InfoBanner";
@@ -16,8 +17,12 @@ function shortHex(value: string): string {
 
 function PoolStatsCard({ tier }: { tier: PoolTier }) {
   const publicClient = usePublicClient();
+  const sdk = useZamaSDK();
   const { poolAddress } = usePoolAddress(tier.id);
   const [depositCount, setDepositCount] = useState<number>();
+  const [revealedNotes, setRevealedNotes] = useState<number>();
+  const [revealing, setRevealing] = useState(false);
+  const [revealError, setRevealError] = useState<string>();
 
   const { data: statsAddress } = useReadContract({
     address: poolAddress,
@@ -76,6 +81,20 @@ function PoolStatsCard({ tier }: { tier: PoolTier }) {
   const hasHandle = handle && handle !== ZERO_HANDLE;
   const hasPoolBalance = poolBalanceHandle && poolBalanceHandle !== ZERO_HANDLE;
 
+  const revealNotes = async () => {
+    if (!hasHandle) return;
+    setRevealing(true);
+    setRevealError(undefined);
+    try {
+      const result = await sdk.relayer.publicDecrypt([handle as `0x${string}`]);
+      setRevealedNotes(Number(result.clearValues[handle as `0x${string}`]));
+    } catch {
+      setRevealError("Couldn't reveal right now. Try again.");
+    } finally {
+      setRevealing(false);
+    }
+  };
+
   return (
     <div className="gradient-ring glass-card p-6">
       <div className="flex items-start justify-between gap-3">
@@ -117,12 +136,29 @@ function PoolStatsCard({ tier }: { tier: PoolTier }) {
             Active notes (encrypted)
           </p>
           {hasHandle ? (
-            <code
-              title={handle}
-              className="mt-2 block truncate rounded-lg bg-paper px-2 py-1.5 font-mono text-xs text-ink-soft"
-            >
-              {shortHex(handle)}
-            </code>
+            <>
+              <code
+                title={handle}
+                className="mt-2 block truncate rounded-lg bg-paper px-2 py-1.5 font-mono text-xs text-ink-soft"
+              >
+                {shortHex(handle)}
+              </code>
+              {revealedNotes === undefined ? (
+                <button
+                  type="button"
+                  onClick={revealNotes}
+                  disabled={revealing}
+                  className="btn-secondary mt-3 !px-3 !py-1.5 text-xs"
+                >
+                  {revealing ? "Decrypting via Zama…" : "Reveal with FHE"}
+                </button>
+              ) : (
+                <p className="stat-value mt-3">{revealedNotes} active</p>
+              )}
+              {revealError && (
+                <p className="mt-2 text-xs text-coral-dark">{revealError}</p>
+              )}
+            </>
           ) : (
             <p className="mt-2 text-sm text-muted">No counter yet</p>
           )}

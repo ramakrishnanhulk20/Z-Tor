@@ -4,7 +4,7 @@ pragma solidity ^0.8.24;
 
 
 
-import {FHE, euint32} from "@fhevm/solidity/lib/FHE.sol";
+import {FHE, ebool, euint32} from "@fhevm/solidity/lib/FHE.sol";
 
 import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 
@@ -102,6 +102,8 @@ contract ZTorLiquidityStats is IZTorLiquidityStats, ZamaEthereumConfig, Ownable 
 
         FHE.allow(count, owner());
 
+        FHE.makePubliclyDecryptable(count);
+
     }
 
 
@@ -116,13 +118,17 @@ contract ZTorLiquidityStats is IZTorLiquidityStats, ZamaEthereumConfig, Ownable 
 
         }
 
-        count = FHE.sub(count, 1);
+        ebool hasNotes = FHE.gt(count, FHE.asEuint32(0));
+
+        count = FHE.select(hasNotes, FHE.sub(count, 1), FHE.asEuint32(0));
 
         _activeNotes[msg.sender] = count;
 
         FHE.allowThis(count);
 
         FHE.allow(count, owner());
+
+        FHE.makePubliclyDecryptable(count);
 
     }
 

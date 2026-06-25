@@ -45,6 +45,35 @@ export const poolAbi = [
   },
   {
     type: "function",
+    name: "finalizeDeposit",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "commitment", type: "bytes32" },
+      { name: "abiEncodedAccepted", type: "bytes" },
+      { name: "decryptionProof", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "pendingDeposits",
+    stateMutability: "view",
+    inputs: [{ name: "commitment", type: "bytes32" }],
+    outputs: [
+      { name: "exists", type: "bool" },
+      { name: "acceptedHandle", type: "bytes32" },
+    ],
+  },
+  {
+    type: "event",
+    name: "DepositPending",
+    inputs: [
+      { name: "commitment", type: "bytes32", indexed: true },
+      { name: "acceptedHandle", type: "bytes32", indexed: false },
+    ],
+  },
+  {
+    type: "function",
     name: "withdraw",
     stateMutability: "nonpayable",
     inputs: [

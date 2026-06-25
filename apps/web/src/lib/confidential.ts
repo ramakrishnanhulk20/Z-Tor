@@ -1,21 +1,18 @@
 import { NoCiphertextError } from "@zama-fhe/react-sdk";
 import type { ZamaSDK } from "@zama-fhe/react-sdk";
-import { toFunctionSelector } from "viem";
 import type { PublicClient, WalletClient } from "viem";
 import { encodeAbiParameters, parseAbiParameters } from "viem";
 import {
   confidentialTransferAndCallAbi,
   confidentialWrapperAbi,
   mintableErc20Abi,
+  poolAbi,
 } from "@/config/contracts";
 import { CONFIDENTIAL_SYMBOL } from "@/config/display";
 import type { PoolAsset } from "@/config/pools";
 import { confidentialWrapper, underlyingToken } from "@/config/zama";
 import { isEncryptedHandle } from "@/lib/decrypt-balance";
-import {
-  buildEncryptedDepositArgs,
-  buildEncryptedTransferArgs,
-} from "@/lib/encrypt";
+import { buildEncryptedTransferArgs } from "@/lib/encrypt";
 import { toBytes32 } from "@/lib/poseidon";
 import type { TxTracker } from "@/lib/track-tx";
 import { FHE_GAS_CAP, STANDARD_GAS_CAP, writeWalletContract } from "@/lib/wallet-write";
@@ -179,45 +176,30 @@ export async function ensureConfidentialBalance(
   return { alreadyHadBalance: false, minted, shielded };
 }
 
-const OPERATOR_UNTIL = Math.min(Math.floor(Date.now() / 1000) + 86400 * 365, 2 ** 48 - 1);
+type PendingDepositInfo = { exists: boolean; acceptedHandle: `0x${string}` };
 
-/** Legacy operator pull — only needed for pre-callback pool deployments. */
-export async function ensureConfidentialOperator(
-  sdk: ZamaSDK,
-  asset: PoolAsset,
-  userAddress: `0x${string}`,
+async function readPendingDeposit(
+  publicClient: PublicClient,
   poolAddress: `0x${string}`,
-  tracker?: TxTracker,
-) {
-  const token = confidentialToken(sdk, asset);
-  const approved = await token.isApproved(poolAddress, userAddress);
-  if (approved) return;
-
-  const authorize = async () => {
-    const { txHash } = await token.approve(poolAddress, OPERATOR_UNTIL);
-    return txHash;
-  };
-
-  if (tracker) {
-    await tracker.run(
-      {
-        pendingTitle: "Authorize pool",
-        pendingDetail: "One-time permission so the pool can receive your deposit.",
-        successTitle: "Pool authorized",
-        successDetail: "You can deposit confidential tokens now.",
-        errorTitle: "Authorization failed",
-      },
-      authorize,
-    );
-    return;
-  }
-
-  await authorize();
+  commitmentHex: `0x${string}`,
+): Promise<PendingDepositInfo> {
+  const result = (await publicClient.readContract({
+    address: poolAddress,
+    abi: poolAbi,
+    functionName: "pendingDeposits",
+    args: [commitmentHex],
+  })) as readonly [boolean, `0x${string}`] | PendingDepositInfo;
+  return Array.isArray(result)
+    ? { exists: result[0], acceptedHandle: result[1] }
+    : (result as PendingDepositInfo);
 }
 
+export type DepositPhase = "depositing" | "confirming";
+
 /**
- * Preferred deposit: one token tx via `confidentialTransferAndCall`.
- * Matches Zama SDK encryption (userAddress = wallet) — no operator approval.
+ * Deposit via `confidentialTransferAndCall`, then finalize once the encrypted
+ * amount check has been publicly decrypted. Wrong amounts are auto-refunded by the
+ * token and never finalize; an interrupted run resumes from confirmation.
  */
 export async function depositViaTransferAndCall(
   sdk: ZamaSDK,
@@ -229,131 +211,100 @@ export async function depositViaTransferAndCall(
   commitment: bigint,
   confidentialAmount: bigint,
   tracker?: TxTracker,
+  onPhase?: (phase: DepositPhase) => void,
 ) {
   const token = confidentialToken(sdk, asset);
   await token.allow();
 
   const tokenAddress = confidentialWrapper(asset);
-  const encrypted = await buildEncryptedTransferArgs(
-    sdk,
-    tokenAddress,
-    userAddress,
-    confidentialAmount,
-  );
-  const callData = encodeAbiParameters(parseAbiParameters("bytes32"), [
-    toBytes32(commitment),
-  ]);
+  const commitmentHex = toBytes32(commitment);
+  const callData = encodeAbiParameters(parseAbiParameters("bytes32"), [commitmentHex]);
 
-  const send = () =>
-    writeWalletContract({
-      walletClient,
-      publicClient,
-      account: userAddress,
-      address: tokenAddress,
-      abi: confidentialTransferAndCallAbi,
-      functionName: "confidentialTransferAndCall",
-      args: [poolAddress, encrypted.handle, encrypted.inputProof, callData],
-      gasCap: FHE_GAS_CAP,
-    });
+  const alreadyPending = (await readPendingDeposit(publicClient, poolAddress, commitmentHex))
+    .exists;
 
-  if (tracker) {
-    return tracker.run(
-      {
-        pendingTitle: "Depositing confidential tokens",
-        pendingDetail: "Sending cUSDC/cWETH to the pool in one step.",
-        successTitle: "Deposit confirmed",
-        successDetail: "Your note is live. Save it somewhere safe.",
-        errorTitle: "Deposit failed",
-      },
-      send,
+  // Step 1 — move encrypted tokens into the pool (records a pending deposit).
+  if (!alreadyPending) {
+    const encrypted = await buildEncryptedTransferArgs(
+      sdk,
+      tokenAddress,
+      userAddress,
+      confidentialAmount,
     );
+    onPhase?.("depositing");
+    const sendDeposit = () =>
+      writeWalletContract({
+        walletClient,
+        publicClient,
+        account: userAddress,
+        address: tokenAddress,
+        abi: confidentialTransferAndCallAbi,
+        functionName: "confidentialTransferAndCall",
+        args: [poolAddress, encrypted.handle, encrypted.inputProof, callData],
+        gasCap: FHE_GAS_CAP,
+      });
+    if (tracker) {
+      await tracker.run(
+        {
+          pendingTitle: "Depositing confidential tokens",
+          pendingDetail: "Sending cUSDC/cWETH into the pool.",
+          successTitle: "Deposit sent",
+          successDetail: "Now confirming the amount.",
+          errorTitle: "Deposit failed",
+        },
+        sendDeposit,
+      );
+    } else {
+      const depositHash = await sendDeposit();
+      await publicClient.waitForTransactionReceipt({ hash: depositHash });
+    }
   }
 
-  const hash = await send();
-  await publicClient.waitForTransactionReceipt({ hash });
-  return hash;
-}
+  // Step 2 — verify the encrypted amount via Zama public decryption, then finalize
+  // so the note becomes spendable.
+  onPhase?.("confirming");
+  const pending = await readPendingDeposit(publicClient, poolAddress, commitmentHex);
+  const { abiEncodedClearValues, decryptionProof } = await sdk.relayer.publicDecrypt([
+    pending.acceptedHandle,
+  ]);
 
-/** Legacy pool-pull deposit for contracts without the callback receiver. */
-export async function depositViaPoolPull(
-  sdk: ZamaSDK,
-  publicClient: PublicClient,
-  walletClient: WalletClient,
-  asset: PoolAsset,
-  userAddress: `0x${string}`,
-  poolAddress: `0x${string}`,
-  commitment: bigint,
-  confidentialAmount: bigint,
-  tracker?: TxTracker,
-) {
-  await ensureConfidentialOperator(sdk, asset, userAddress, poolAddress, tracker);
-
-  const tokenAddress = confidentialWrapper(asset);
-  const encrypted = await buildEncryptedDepositArgs(
-    sdk,
-    tokenAddress,
-    poolAddress,
-    confidentialAmount,
-  );
-
-  const send = () =>
+  const sendFinalize = () =>
     writeWalletContract({
       walletClient,
       publicClient,
       account: userAddress,
       address: poolAddress,
-      abi: [
-        {
-          type: "function",
-          name: "deposit",
-          stateMutability: "nonpayable",
-          inputs: [
-            { name: "commitment", type: "bytes32" },
-            { name: "encryptedAmount", type: "bytes32" },
-            { name: "inputProof", type: "bytes" },
-          ],
-          outputs: [],
-        },
-      ],
-      functionName: "deposit",
-      args: [toBytes32(commitment), encrypted.handle, encrypted.inputProof],
+      abi: poolAbi,
+      functionName: "finalizeDeposit",
+      args: [commitmentHex, abiEncodedClearValues, decryptionProof],
       gasCap: FHE_GAS_CAP,
     });
 
   if (tracker) {
     return tracker.run(
       {
-        pendingTitle: "Depositing confidential tokens",
-        pendingDetail: "Pool is pulling your encrypted balance.",
+        pendingTitle: "Confirming your deposit",
+        pendingDetail: "Zama verifies the amount, then your note goes live.",
         successTitle: "Deposit confirmed",
         successDetail: "Your note is live. Save it somewhere safe.",
-        errorTitle: "Deposit failed",
+        errorTitle: "Confirmation failed",
       },
-      send,
+      sendFinalize,
     );
   }
 
-  const hash = await send();
-  await publicClient.waitForTransactionReceipt({ hash });
-  return hash;
+  const finalizeHash = await sendFinalize();
+  await publicClient.waitForTransactionReceipt({ hash: finalizeHash });
+  return finalizeHash;
 }
 
-export { buildEncryptedDepositArgs, buildEncryptedTransferArgs };
+export { buildEncryptedTransferArgs };
 
-const CALLBACK_SELECTOR = toFunctionSelector(
-  "onConfidentialTransferReceived(address,address,bytes32,bytes)",
-);
-
-/** True when the pool implements the ERC-7984 deposit callback (Phase 3+ redeploy). */
-export async function poolSupportsTransferAndCall(
-  publicClient: PublicClient,
-  poolAddress: `0x${string}`,
-): Promise<boolean> {
-  const code = await publicClient.getBytecode({ address: poolAddress });
-  if (!code || code === "0x") return false;
-  return code.toLowerCase().includes(CALLBACK_SELECTOR.slice(2).toLowerCase());
-}
-
+/**
+ * Confidential deposit for the current pools: the two-step `transferAndCall` +
+ * `finalizeDeposit` flow that verifies the encrypted amount before the note
+ * becomes spendable.
+ */
 export async function depositConfidential(
   sdk: ZamaSDK,
   publicClient: PublicClient,
@@ -364,28 +315,9 @@ export async function depositConfidential(
   commitment: bigint,
   confidentialAmount: bigint,
   tracker?: TxTracker,
+  onPhase?: (phase: DepositPhase) => void,
 ) {
-  // transferAndCall enabled on Phase 3c+ (deposit callback + withdraw payout ACL fixed).
-  const useCallback =
-    process.env.NEXT_PUBLIC_CONFIDENTIAL_DEPOSIT !== "poolPull" &&
-    (process.env.NEXT_PUBLIC_CONFIDENTIAL_DEPOSIT === "transferAndCall" ||
-      (await poolSupportsTransferAndCall(publicClient, poolAddress)));
-
-  if (useCallback) {
-    return depositViaTransferAndCall(
-      sdk,
-      publicClient,
-      walletClient,
-      asset,
-      userAddress,
-      poolAddress,
-      commitment,
-      confidentialAmount,
-      tracker,
-    );
-  }
-
-  return depositViaPoolPull(
+  return depositViaTransferAndCall(
     sdk,
     publicClient,
     walletClient,
@@ -395,5 +327,6 @@ export async function depositConfidential(
     commitment,
     confidentialAmount,
     tracker,
+    onPhase,
   );
 }

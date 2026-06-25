@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {FHE, ebool, euint64, externalEuint64} from "@fhevm/solidity/lib/FHE.sol";
+import {FHE, ebool, euint64} from "@fhevm/solidity/lib/FHE.sol";
 import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984.sol";
 import {IERC7984Receiver} from "@openzeppelin/confidential-contracts/interfaces/IERC7984Receiver.sol";
@@ -10,15 +10,26 @@ import {IZTorLiquidityStats} from "./interfaces/IZTorLiquidityStats.sol";
 import {IZTorVerifier} from "./interfaces/IZTorVerifier.sol";
 
 /// @title Fixed-denomination pool backed by ERC-7984 confidential tokens
-/// @notice Deposits pull encrypted tokens from the user; withdrawals pay out
-/// confidential tokens so pool balances stay encrypted on-chain.
 contract ZTorConfidentialPool is ZTorPool, ZamaEthereumConfig, IERC7984Receiver {
     IERC7984 public immutable confidentialToken;
+
+    struct PendingDeposit {
+        bool exists;
+        bytes32 acceptedHandle;
+    }
+
+    /// @dev Commitments whose tokens arrived but whose amount is not yet confirmed.
+    mapping(bytes32 => PendingDeposit) public pendingDeposits;
+
+    event DepositPending(bytes32 indexed commitment, bytes32 acceptedHandle);
+    event DepositRejected(bytes32 indexed commitment);
 
     error EthNotAccepted();
     error UseConfidentialDeposit();
     error ZeroToken();
     error InvalidCommitmentPayload();
+    error CommitmentAlreadyPending();
+    error NoPendingDeposit();
 
     constructor(
         IZTorVerifier _verifier,
@@ -38,45 +49,64 @@ contract ZTorConfidentialPool is ZTorPool, ZamaEthereumConfig, IERC7984Receiver 
         revert UseConfidentialDeposit();
     }
 
-    /// @notice Preferred deposit path: user calls confidentialTransferAndCall on the
-    /// confidential token with data = abi.encode(commitment). The token invokes
-    /// onConfidentialTransferReceived so encryption binds to the user wallet
-    /// (msg.sender on the token), matching the Zama SDK transfer flow.
+    /// @notice ERC-7984 transfer callback used as the deposit entrypoint. Records the
+    /// commitment as pending and publishes an encrypted `amount == denomination` check;
+    /// the returned bool also drives the token's refund when the amount is wrong. Only
+    /// the confidential token may call it, so the `amount` handle cannot be spoofed.
     function onConfidentialTransferReceived(
-        address /*operator*/,
-        address /*from*/,
-        euint64 /*amount*/,
+        address,
+        address,
+        euint64 amount,
         bytes calldata data
     ) external returns (ebool) {
-        FHE.cleanTransientStorage();
         if (msg.sender != address(confidentialToken)) revert ZeroToken();
         if (data.length != 32) revert InvalidCommitmentPayload();
         bytes32 commitment = abi.decode(data, (bytes32));
-        _registerDeposit(commitment);
-        ebool accepted = FHE.asEbool(true);
+        if (commitments[commitment]) revert CommitmentAlreadyUsed();
+        if (pendingDeposits[commitment].exists) revert CommitmentAlreadyPending();
+        if (uint256(commitment) >= FIELD_SIZE) revert CommitmentNotInField();
+
+        ebool accepted = FHE.eq(amount, FHE.asEuint64(uint64(denomination)));
+        FHE.allowThis(accepted);
+        FHE.makePubliclyDecryptable(accepted);
         FHE.allowTransient(accepted, msg.sender);
+
+        bytes32 handle = FHE.toBytes32(accepted);
+        pendingDeposits[commitment] = PendingDeposit({exists: true, acceptedHandle: handle});
+        emit DepositPending(commitment, handle);
+
         return accepted;
     }
 
-    /// @notice Legacy pull-deposit: pool calls confidentialTransferFrom as operator.
-    /// Prefer onConfidentialTransferReceived via confidentialTransferAndCall.
-    function deposit(
+    /// @notice Finalize a pending deposit from the verified public decryption of its
+    /// amount check. The commitment becomes a spendable note only if the amount matched.
+    /// Permissionless: KMS signatures are verified on-chain so the result cannot be forged.
+    function finalizeDeposit(
         bytes32 commitment,
-        externalEuint64 encryptedAmount,
-        bytes calldata inputProof
+        bytes calldata abiEncodedAccepted,
+        bytes calldata decryptionProof
     ) external nonReentrant {
-        confidentialToken.confidentialTransferFrom(
-            msg.sender,
-            address(this),
-            encryptedAmount,
-            inputProof
-        );
-        _registerDeposit(commitment);
+        PendingDeposit memory pending = pendingDeposits[commitment];
+        if (!pending.exists) revert NoPendingDeposit();
+
+        bytes32[] memory handles = new bytes32[](1);
+        handles[0] = pending.acceptedHandle;
+        FHE.checkSignatures(handles, abiEncodedAccepted, decryptionProof);
+        bool accepted = abi.decode(abiEncodedAccepted, (bool));
+
+        delete pendingDeposits[commitment];
+
+        if (accepted) {
+            _registerDeposit(commitment);
+        } else {
+            emit DepositRejected(commitment);
+        }
     }
 
+    /// @dev Unused; confidential deposits enter through the ERC-7984 callback.
+    // solhint-disable-next-line no-empty-blocks
     function _processDeposit() internal override {}
 
-    /// @dev ABI alias so the web app can read the confidential token address.
     function token() external view returns (address) {
         return address(confidentialToken);
     }

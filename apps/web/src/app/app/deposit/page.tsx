@@ -44,6 +44,7 @@ type Phase =
   | "shielding"
   | "encrypting"
   | "depositing"
+  | "confirming"
   | "done";
 
 const FLOW_STEPS = ["Choose pool", "Save note", "Deposit"] as const;
@@ -115,7 +116,8 @@ function DepositContent() {
     phase === "minting" ||
     phase === "shielding" ||
     phase === "encrypting" ||
-    phase === "depositing";
+    phase === "depositing" ||
+    phase === "confirming";
 
   const depositButtonLabel = (): string => {
     switch (phase) {
@@ -129,6 +131,8 @@ function DepositContent() {
         return "Encrypting deposit with Zama FHE…";
       case "depositing":
         return "Confirm deposit in wallet";
+      case "confirming":
+        return "Confirming amount… confirm in wallet";
       default:
         return `Deposit ${pool.label}`;
     }
@@ -191,6 +195,7 @@ function DepositContent() {
         commitment,
         pool.confidentialAmount,
         tx,
+        (p) => setPhase(p),
       );
       setTxHash(hash);
 
@@ -277,7 +282,11 @@ function DepositContent() {
               </li>
               <li>
                 <span className="font-medium text-ink">4. Encrypted transfer</span> — call Zama&apos;s
-                cWETH/cUSDC wrapper; it forwards tokens into the Z-Tor pool in one confirmation
+                cWETH/cUSDC wrapper; it forwards tokens into the Z-Tor pool
+              </li>
+              <li>
+                <span className="font-medium text-ink">5. Amount check</span> — Zama verifies your
+                deposit equals the pool amount, then your note goes live (a second quick confirm)
               </li>
             </ol>
           </div>

@@ -12,6 +12,8 @@ Z-Tor pools accept only cUSDC and cWETH (ERC-7984 tokens where balances are encr
 
 Choose one of four fixed pools (0.1 cWETH, 1 cWETH, 100 cUSDC, or 1,000 cUSDC) and deposit exactly that amount. Because every deposit in a pool is the same size, yours is indistinguishable from all the others.
 
+Your deposit amount is encrypted, so the pool can't simply read it. Instead it runs a homomorphic check — *“does this encrypted amount equal the pool size?”* — and Zama's network signs the yes/no answer. A quick second confirmation submits that signed answer, and only then does your note become spendable. If the amount is ever wrong, the tokens are refunded automatically and no note is created. This keeps every pool exactly solvent without revealing a single amount.
+
 ## 3. Keep your secret note
 
 Z-Tor gives you a secret note: a single line of text starting with `ztor-`. It is the only proof that one of the deposits in the pool is yours. Write it down, store it offline, and never share it. Anyone holding the note can withdraw the funds, and nobody can recover a lost one.

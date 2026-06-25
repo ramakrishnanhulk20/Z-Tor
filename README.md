@@ -55,12 +55,13 @@ Unlike plain blockchain transfers where anyone can trace your history, Z-Tor bre
 
 - **Unlinkability** — Groth16 proof shows membership in the pool without revealing which deposit is yours
 - **Confidential amounts** — pools hold ERC-7984 cUSDC/cWETH; balances are encrypted on-chain
-- **FHE stats** — encrypted active-note counters via fhEVM (visible only to authorized decryptors)
+- **Encrypted deposit check** — the pool verifies each deposit equals the pool size via a homomorphic compare + Zama public decryption, so a note only goes live once the amount is confirmed (wrong amounts auto-refund)
+- **FHE stats** — encrypted active-note counters via fhEVM, revealable on the Stats page
 
 ### 💸 Core user flow
 
 - **Shield** — mint Zama test tokens, wrap to confidential cUSDC/cWETH
-- **Deposit** — pick a fixed pool tier, save your secret note, send encrypted tokens
+- **Deposit** — pick a fixed pool tier, save your secret note, send encrypted tokens, then confirm the amount check
 - **Wait** — ~10 minute privacy delay (reduces same-block fingerprinting)
 - **Withdraw** — spend note to any recipient; optional gasless relayer
 

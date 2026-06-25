@@ -28,6 +28,10 @@ Open the app → **Shield**: mint test WETH or USDC, then shield (wrap) them int
 
 Deposit first verifies whether you already hold enough confidential tokens. Minting and shielding only run if you are short. If you shielded first, you should see a balance check and then go straight to the deposit transaction.
 
+### Why does Deposit need two confirmations?
+
+Your deposit amount is encrypted, so the pool verifies it with fully homomorphic encryption instead of reading it directly. The first transaction moves your confidential tokens in; then Zama's network decrypts a single yes/no check (“is the amount exactly the pool size?”) and a quick second transaction finalizes your note. Wrong amounts are refunded automatically and never create a note. Those few extra seconds are what guarantee every pool stays exactly solvent.
+
 ### What exactly is a note?
 
 A note is a single line of text, starting with `ztor-`, that you receive when you deposit. It is the only proof that one of the deposits in the pool is yours, and the only key that can withdraw the funds. Treat it like cash.
