@@ -20,13 +20,13 @@ Fixed `onConfidentialTransferReceived` ACL and `_processWithdraw`
 
 Deploy block: **11114155** (first pool in this rollout).
 
-| Contract | Address |
-|----------|---------|
-| ZTorRegistry | `0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2` |
-| ZTorLiquidityStats | `0x11CD2af54025B3209F04b928BD7cA8c64D411e55` |
-| Groth16Verifier | `0x04F2ADA900BeCDe03E5306d652049344a6fAdfb5` |
-| ZTorPoolFactory | `0x24c4E6dBe47AE08a87C4B7A53a29107CffD96E95` |
-| PoseidonT3 (library) | `0x6FC2e4E931dFca927c9320F44FB255a64Cb3539e` |
+| Contract | Address | Etherscan |
+|----------|---------|-----------|
+| ZTorRegistry | `0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2` | [verified](https://sepolia.etherscan.io/address/0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2#code) |
+| ZTorLiquidityStats | `0x11CD2af54025B3209F04b928BD7cA8c64D411e55` | [verified](https://sepolia.etherscan.io/address/0x11CD2af54025B3209F04b928BD7cA8c64D411e55#code) |
+| Groth16Verifier | `0x04F2ADA900BeCDe03E5306d652049344a6fAdfb5` | [verified](https://sepolia.etherscan.io/address/0x04F2ADA900BeCDe03E5306d652049344a6fAdfb5#code) |
+| ZTorPoolFactory | `0x24c4E6dBe47AE08a87C4B7A53a29107CffD96E95` | [verified](https://sepolia.etherscan.io/address/0x24c4E6dBe47AE08a87C4B7A53a29107CffD96E95#code) |
+| PoseidonT3 (library) | `0x6FC2e4E931dFca927c9320F44FB255a64Cb3539e` | [verified](https://sepolia.etherscan.io/address/0x6FC2e4E931dFca927c9320F44FB255a64Cb3539e#code) |
 
 #### Zama confidential tokens (Sepolia)
 
@@ -39,21 +39,25 @@ Source: [Zama Sepolia addresses](https://docs.zama.org/protocol/protocol-apps/ad
 
 #### Fixed pools (`ZTorConfidentialPool`)
 
-| Pool id | Asset | Amount | Address |
-|---------|-------|--------|---------|
-| `eth-0.1` | WETH (confidential) | 0.1 | `0x3FE0Cdb67035ABF0953fbfA1f4032b0F43DB9636` |
-| `eth-1` | WETH (confidential) | 1 | `0x9144E1e56D4C592c3CF70b765AAbEb252E8C8417` |
-| `usdc-100` | USDC (confidential) | 100 | `0x1993D693C6e1D59323be3935ABA5efc686343FCc` |
-| `usdc-1000` | USDC (confidential) | 1,000 | `0xEA8ef61Bc5B4989fd4c4205B73844d982a0b811b` |
+| Pool id | Asset | Amount | Address | Etherscan |
+|---------|-------|--------|---------|-----------|
+| `eth-0.1` | WETH (confidential) | 0.1 | `0x3FE0Cdb67035ABF0953fbfA1f4032b0F43DB9636` | [verified](https://sepolia.etherscan.io/address/0x3FE0Cdb67035ABF0953fbfA1f4032b0F43DB9636#code) |
+| `eth-1` | WETH (confidential) | 1 | `0x9144E1e56D4C592c3CF70b765AAbEb252E8C8417` | [verified](https://sepolia.etherscan.io/address/0x9144E1e56D4C592c3CF70b765AAbEb252E8C8417#code) |
+| `usdc-100` | USDC (confidential) | 100 | `0x1993D693C6e1D59323be3935ABA5efc686343FCc` | [verified](https://sepolia.etherscan.io/address/0x1993D693C6e1D59323be3935ABA5efc686343FCc#code) |
+| `usdc-1000` | USDC (confidential) | 1,000 | `0xEA8ef61Bc5B4989fd4c4205B73844d982a0b811b` | [verified](https://sepolia.etherscan.io/address/0xEA8ef61Bc5B4989fd4c4205B73844d982a0b811b#code) |
 
-Custom pools use ids `eth-<confidential-units>` or `usdc-<confidential-units>`
-and are created permissionlessly via `ZTorPoolFactory`.
+Custom-denomination pools via `ZTorPoolFactory` are deployed on Sepolia but
+**not in the web UI yet** (see [ROADMAP.md](./ROADMAP.md)).
+
+All Phase 3c contracts above are source-verified on Sepolia Etherscan. To
+re-verify after a redeploy, set `ETHERSCAN_API_KEY` and run
+`npm run verify:sepolia -w @z-tor/contracts` (uses deploy-time `solcInputs`
+from `deployments/sepolia/`).
 
 Env for `apps/web/.env.local`:
 
 - `NEXT_PUBLIC_ZTOR_REGISTRY=0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2`
 - `NEXT_PUBLIC_DEPLOY_BLOCK=11114155`
-- `NEXT_PUBLIC_ZTOR_FACTORY=0x24c4E6dBe47AE08a87C4B7A53a29107CffD96E95`
 - `NEXT_PUBLIC_RELAYER_URL` (optional — see below)
 
 Relayer (`apps/relayer/.env`): `ZTOR_REGISTRY` + `RELAYER_PRIVATE_KEY` + `RPC_URL`.

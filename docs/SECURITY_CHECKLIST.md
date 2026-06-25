@@ -40,7 +40,7 @@ deployment and before any mainnet conversation (Phase 3).
 - [x] Deployer key treated as compromised (documented in `DEPLOYMENTS.md`);
       Sepolia only, never to hold real funds
 - [x] `.env` / mnemonics gitignored
-- [ ] Etherscan verification of deployed contracts (pending API key)
+- [x] Etherscan verification of Phase 3c Sepolia contracts (see `DEPLOYMENTS.md`)
 - [ ] Monitoring / incident response plan (Phase 3)
 
 ## Known accepted risks (testnet)

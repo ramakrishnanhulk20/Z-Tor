@@ -18,9 +18,8 @@ const config: HardhatUserConfig = {
     deployer: 0,
   },
   etherscan: {
-    apiKey: {
-      sepolia: vars.get("ETHERSCAN_API_KEY", ""),
-    },
+    // Single key uses Etherscan API v2 (required since Aug 2025).
+    apiKey: process.env.ETHERSCAN_API_KEY ?? vars.get("ETHERSCAN_API_KEY", ""),
   },
   networks: {
     hardhat: {

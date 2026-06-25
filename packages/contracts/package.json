@@ -15,7 +15,7 @@
     "typechain": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat typechain",
     "deploy:sepolia": "hardhat deploy --network sepolia",
     "deploy:factory": "hardhat deploy --network sepolia --tags Factory",
-    "verify:sepolia": "hardhat verify --network sepolia"
+    "verify:sepolia": "node scripts/verify-via-api.mjs"
   },
   "dependencies": {
     "@fhevm/mock-utils": "^0.4.2",
