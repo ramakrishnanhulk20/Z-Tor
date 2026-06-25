@@ -100,13 +100,13 @@ Full phase history: [docs/ROADMAP.md](docs/ROADMAP.md)
 | Contract | Address | Network |
 |----------|---------|---------|
 | ZTorRegistry | `0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2` | Sepolia |
-| ZTorLiquidityStats | `0x11CD2af54025B3209F04b928BD7cA8c64D411e55` | Sepolia |
+| ZTorLiquidityStats | `0xD6B6AB5f7e3A612ccaC70e72B2c196cE6Ea37994` | Sepolia |
 | Groth16Verifier | `0x04F2ADA900BeCDe03E5306d652049344a6fAdfb5` | Sepolia |
-| ZTorPoolFactory | `0x24c4E6dBe47AE08a87C4B7A53a29107CffD96E95` | Sepolia |
-| eth-0.1 pool | `0x3FE0Cdb67035ABF0953fbfA1f4032b0F43DB9636` | Sepolia |
-| eth-1 pool | `0x9144E1e56D4C592c3CF70b765AAbEb252E8C8417` | Sepolia |
-| usdc-100 pool | `0x1993D693C6e1D59323be3935ABA5efc686343FCc` | Sepolia |
-| usdc-1000 pool | `0xEA8ef61Bc5B4989fd4c4205B73844d982a0b811b` | Sepolia |
+| ZTorPoolFactory | `0x6560245C5dD790B8205FEecD2B6D8fF706CfFf31` | Sepolia |
+| eth-0.1 pool | `0x7CEF360d9d3EEcdd7ACccbBEBff98aEFd22af910` | Sepolia |
+| eth-1 pool | `0xBaE772CfaC2C22F1291B05327A16306328023040` | Sepolia |
+| usdc-100 pool | `0x82A906320495537C57a8123a8BFFC1722D023C66` | Sepolia |
+| usdc-1000 pool | `0xf9A04663Ce829F0E1F5D510005896D56cA14ba46` | Sepolia |
 | cUSDC (Zama) | `0x7c5BF43B851c1dff1a4feE8dB225b87f2C223639` | Sepolia |
 | cWETH (Zama) | `0x46208622DA27d91db4f0393733C8BA082ed83158` | Sepolia |
 

@@ -131,8 +131,6 @@ const REVERT_MESSAGES = {
   InvalidProof: "The proof did not verify. Regenerate it with this relayer's address and fee.",
 };
 
-const BROKEN_PAYOUT_REVERT = "0x9de3392c";
-
 function errorText(err) {
   if (err instanceof BaseError) {
     return [err.shortMessage, err.message, err.details, err.cause?.toString?.()]
@@ -147,17 +145,10 @@ function relayErrorMessage(err) {
   if (name && REVERT_MESSAGES[name]) return REVERT_MESSAGES[name];
 
   const raw = errorText(err);
-  if (raw.includes(BROKEN_PAYOUT_REVERT)) {
-    return (
-      "This note is from an older pool that cannot pay out confidential tokens (Sepolia Phase 3b bug). " +
-      "Make a fresh deposit on the current pools, wait the privacy delay, then withdraw with the new note. " +
-      "Your current note stays unspent."
-    );
-  }
   if (name) return `Withdraw reverted: ${name}.`;
   if (raw.includes("reverted")) {
     return (
-      "The withdrawal would revert on-chain. If this note is from before the latest pool redeploy, " +
+      "The withdrawal would revert on-chain. If this note is from an older deployment, " +
       "deposit again with a fresh note on the current pools."
     );
   }
