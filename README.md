@@ -134,7 +134,7 @@ Full map: [docs/REPOSITORY_STRUCTURE.md](docs/REPOSITORY_STRUCTURE.md).
 | Contract | Role |
 |----------|------|
 | `ZTorRegistry` | Maps pool IDs → pool addresses |
-| `ZTorPoolFactory` | Permissionless custom-denomination pools |
+| `ZTorPoolFactory` | Permissionless custom pools (on Sepolia; UI upcoming) |
 | `ZTorConfidentialPool` | Fixed pools: Merkle deposits + FHE token payout |
 | `ZTorLiquidityStats` | Encrypted active-note counters (fhEVM) |
 | `Groth16Verifier` | On-chain proof verification |
@@ -217,6 +217,19 @@ Run: `npm test -w @z-tor/contracts`
 ```
 
 Tests use **Hardhat mock FHE** locally; Sepolia uses Zama's live fhEVM coprocessor.
+
+---
+
+## Roadmap
+
+| Status | Item |
+|--------|------|
+| ✅ Live | Shield, fixed-tier deposit, withdraw, stats, disclose, relayer |
+| ✅ Live | All Phase 3c Sepolia contracts verified on Etherscan |
+| 🔜 Upcoming | Custom amount pools (`ZTorPoolFactory` + deposit UI) |
+| 🔜 Upcoming | Mainnet readiness (legal review, monitoring, upgrade policy) |
+
+Full phase history: [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ---
 

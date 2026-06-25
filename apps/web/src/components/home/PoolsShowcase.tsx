@@ -12,12 +12,11 @@ export function PoolsShowcase() {
         <div className="max-w-2xl">
           <p className="eyebrow text-coral">Pools</p>
           <h2 className="mt-4 font-serif text-4xl font-medium tracking-tight md:text-5xl">
-            Fixed tiers, or your own amount.
+            Four fixed tiers. Strongest privacy.
           </h2>
           <p className="mt-5 leading-relaxed text-ink-soft">
-            Start with the four main pools for the strongest anonymity sets, or
-            deposit a custom amount of cWETH or cUSDC and spin up a new pool on
-            the fly.
+            Every deposit in a tier is identical, so observers cannot tell yours
+            apart from anyone else&apos;s. Pick 0.1 or 1 cWETH, or 100 or 1,000 cUSDC.
           </p>
         </div>
       </ScrollReveal>

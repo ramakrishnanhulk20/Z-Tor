@@ -2,10 +2,6 @@ export const REGISTRY_ADDRESS = process.env.NEXT_PUBLIC_ZTOR_REGISTRY as
   | `0x${string}`
   | undefined;
 
-export const FACTORY_ADDRESS = process.env.NEXT_PUBLIC_ZTOR_FACTORY as
-  | `0x${string}`
-  | undefined;
-
 /** First block to scan for Deposit events (set to the deploy block). */
 export const DEPLOY_BLOCK = BigInt(process.env.NEXT_PUBLIC_DEPLOY_BLOCK ?? "0");
 
@@ -32,23 +28,6 @@ export const registryAbi = [
     stateMutability: "view",
     inputs: [{ name: "poolId", type: "string" }],
     outputs: [{ type: "bool" }],
-  },
-] as const;
-
-export const factoryAbi = [
-  {
-    type: "function",
-    name: "createEthPool",
-    stateMutability: "nonpayable",
-    inputs: [{ name: "denomination", type: "uint256" }],
-    outputs: [{ type: "address" }],
-  },
-  {
-    type: "function",
-    name: "createUsdcPool",
-    stateMutability: "nonpayable",
-    inputs: [{ name: "denomination", type: "uint256" }],
-    outputs: [{ type: "address" }],
   },
 ] as const;
 

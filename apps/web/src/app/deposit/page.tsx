@@ -10,10 +10,7 @@ import {
   useWalletClient,
 } from "wagmi";
 import { useZamaSDK } from "@zama-fhe/react-sdk";
-import {
-  DepositPoolPicker,
-  useActivePoolFromPicker,
-} from "@/components/DepositPoolPicker";
+import { DepositPoolPicker } from "@/components/DepositPoolPicker";
 import { FlowSteps } from "@/components/FlowSteps";
 import { NotePanel } from "@/components/NotePanel";
 import { PageShell } from "@/components/PageShell";
@@ -30,7 +27,6 @@ import { isEncryptedHandle } from "@/lib/decrypt-balance";
 import {
   ANONYMITY_DELAY_SECONDS,
   POOL_TIERS,
-  type PoolAsset,
   type PoolTier,
 } from "@/config/pools";
 import { usePoolAddress } from "@/hooks/usePoolAddress";
@@ -49,17 +45,13 @@ type Phase =
   | "encrypting"
   | "depositing"
   | "done";
-type Mode = "fixed" | "custom";
 
 const FLOW_STEPS = ["Choose pool", "Save note", "Deposit"] as const;
 
 function DepositContent() {
   const params = useSearchParams();
   const fromQuery = POOL_TIERS.find((p) => p.id === params.get("pool"));
-  const [mode, setMode] = useState<Mode>("fixed");
   const [pool, setPool] = useState<PoolTier>(fromQuery ?? POOL_TIERS[0]);
-  const [customAsset, setCustomAsset] = useState<PoolAsset>("ETH");
-  const [customAmount, setCustomAmount] = useState("");
   const [phase, setPhase] = useState<Phase>("select");
   const [generated, setGenerated] = useState<GeneratedNote | null>(null);
   const [savedConfirmed, setSavedConfirmed] = useState(false);
@@ -67,14 +59,13 @@ function DepositContent() {
   const [errorMessage, setErrorMessage] = useState<string>();
   const [readyAtMs, setReadyAtMs] = useState<number>();
 
-  const activePool = useActivePoolFromPicker(mode, pool, customAsset, customAmount);
   const { isConnected, address, chain } = useAccount();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const sdk = useZamaSDK();
-  const { toast, tracker } = useTxToast();
+  const { tracker } = useTxToast();
   const [relayerAddress, setRelayerAddress] = useState<`0x${string}`>();
-  const { poolAddress, notDeployed, networkError } = usePoolAddress(activePool?.id ?? "");
+  const { poolAddress, notDeployed, networkError } = usePoolAddress(pool.id);
 
   useEffect(() => {
     void fetchRelayerInfo().then((info) => {
@@ -88,15 +79,15 @@ function DepositContent() {
       address.toLowerCase() === relayerAddress.toLowerCase(),
   );
 
-  const underlying = activePool ? underlyingToken(activePool.asset) : undefined;
-  const wrapper = activePool ? confidentialWrapper(activePool.asset) : undefined;
+  const underlying = underlyingToken(pool.asset);
+  const wrapper = confidentialWrapper(pool.asset);
 
   const { data: underlyingBalance } = useReadContract({
     address: underlying,
     abi: mintableErc20Abi,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
-    query: { enabled: isConnected && Boolean(underlying) },
+    query: { enabled: isConnected },
   });
 
   const { data: confidentialHandle } = useReadContract({
@@ -104,20 +95,18 @@ function DepositContent() {
     abi: confidentialWrapperAbi,
     functionName: "confidentialBalanceOf",
     args: address ? [address] : undefined,
-    query: { enabled: isConnected && Boolean(wrapper) },
+    query: { enabled: isConnected },
   });
 
   const hasConfidentialTokens = isEncryptedHandle(
     confidentialHandle as `0x${string}` | undefined,
   );
 
-  // Plain WETH/USDC is only needed when the wallet has no shielded balance yet.
   const needsMintOrWrap = Boolean(
     isConnected &&
-      activePool &&
       !hasConfidentialTokens &&
       underlyingBalance !== undefined &&
-      underlyingBalance < activePool.amountWei,
+      underlyingBalance < pool.amountWei,
   );
 
   const countdown = useCountdown(readyAtMs);
@@ -141,7 +130,7 @@ function DepositContent() {
       case "depositing":
         return "Confirm deposit in wallet";
       default:
-        return activePool ? `Deposit ${activePool.label}` : "Deposit";
+        return `Deposit ${pool.label}`;
     }
   };
 
@@ -164,21 +153,13 @@ function DepositContent() {
   };
 
   const handleGenerate = () => {
-    if (!activePool) return;
-    setGenerated(generateNote(activePool.id));
+    setGenerated(generateNote(pool.id));
     setSavedConfirmed(false);
     setPhase("note");
   };
 
   const handleDeposit = async () => {
-    if (
-      !generated ||
-      !poolAddress ||
-      !publicClient ||
-      !walletClient ||
-      !address ||
-      !activePool
-    ) {
+    if (!generated || !poolAddress || !publicClient || !walletClient || !address) {
       return;
     }
     setErrorMessage(undefined);
@@ -191,10 +172,10 @@ function DepositContent() {
         sdk,
         publicClient,
         walletClient,
-        activePool.asset,
+        pool.asset,
         address,
-        activePool.amountWei,
-        activePool.confidentialAmount,
+        pool.amountWei,
+        pool.confidentialAmount,
         tx,
         mapPrepStep,
       );
@@ -204,11 +185,11 @@ function DepositContent() {
         sdk,
         publicClient,
         walletClient,
-        activePool.asset,
+        pool.asset,
         address,
         poolAddress,
         commitment,
-        activePool.confidentialAmount,
+        pool.confidentialAmount,
         tx,
       );
       setTxHash(hash);
@@ -228,12 +209,11 @@ function DepositContent() {
   };
 
   const explorer = txHash ? explorerTxUrl(txHash, chain?.id) : undefined;
-  const displayPool = activePool ?? pool;
 
   return (
     <PageShell
       title="Deposit"
-      subtitle="Pick a pool, save your secret note, then deposit confidential cWETH or cUSDC. If you already shielded enough tokens, we only check your balance — minting happens on the Shield page or only when you are short."
+      subtitle="Pick one of four fixed pools, save your secret note, then deposit confidential cWETH or cUSDC. MetaMask may show Zama's cWETH or cUSDC contract — that token forwards your deposit into the Z-Tor pool."
       eyebrow="Step one"
     >
       <div className="mb-8">
@@ -245,20 +225,11 @@ function DepositContent() {
       </p>
       <div className="mt-3">
         <DepositPoolPicker
-          mode={mode}
-          onModeChange={(m) => {
-            setMode(m);
-            resetFlow();
-          }}
           pool={pool}
           onPoolChange={(tier) => {
             setPool(tier);
             resetFlow();
           }}
-          customAsset={customAsset}
-          onCustomAssetChange={setCustomAsset}
-          customAmount={customAmount}
-          onCustomAmountChange={setCustomAmount}
           disabled={busy || phase === "done"}
         />
       </div>
@@ -273,13 +244,13 @@ function DepositContent() {
           )}
           {hasConfidentialTokens && !usingRelayerWallet && (
             <InfoBanner tone="success" title="Confidential balance detected" className="mt-6">
-              This wallet already holds {confidentialLabel(displayPool.asset)}. Deposit will
+              This wallet already holds {confidentialLabel(pool.asset)}. Deposit will
               verify your balance first — no minting unless you are short.
             </InfoBanner>
           )}
           {needsMintOrWrap && (
             <InfoBanner tone="warning" title="Need confidential tokens first" className="mt-6">
-              No {confidentialLabel(displayPool.asset)} detected yet.{" "}
+              No {confidentialLabel(pool.asset)} detected yet.{" "}
               <Link href="/shield" className="font-medium text-coral underline underline-offset-2">
                 Shield on the Shield page
               </Link>{" "}
@@ -293,34 +264,36 @@ function DepositContent() {
             </p>
             <ol className="mt-3 space-y-2 text-sm leading-relaxed text-ink-soft">
               <li>
-                <span className="font-medium text-ink">1. Balance check</span> — read your
+                <span className="font-medium text-ink">1. Pool lookup</span> — Z-Tor reads your
+                chosen pool address from the on-chain registry
+              </li>
+              <li>
+                <span className="font-medium text-ink">2. Balance check</span> — read your
                 encrypted cUSDC/cWETH (may ask for a wallet signature to decrypt locally)
               </li>
               <li>
-                <span className="font-medium text-ink">2. Top up only if needed</span> — mint
+                <span className="font-medium text-ink">3. Top up only if needed</span> — mint
                 and shield test tokens only when you are short
               </li>
               <li>
-                <span className="font-medium text-ink">3. Encrypted transfer</span> — send the
-                pool denomination via Zama FHE in one wallet confirmation
+                <span className="font-medium text-ink">4. Encrypted transfer</span> — call Zama&apos;s
+                cWETH/cUSDC wrapper; it forwards tokens into the Z-Tor pool in one confirmation
               </li>
             </ol>
           </div>
           <button
             type="button"
             onClick={handleGenerate}
-            disabled={!isConnected || !activePool || notDeployed}
+            disabled={!isConnected || notDeployed}
             className="btn-primary mt-8 w-full"
           >
             {!isConnected
               ? "Connect wallet to continue"
-              : !activePool
-                ? "Enter a valid custom amount"
-                  : notDeployed
-                    ? networkError
-                      ? "Can't reach Ethereum. Check your connection"
-                      : "Create or select an existing pool"
-                    : "Generate my secret note"}
+              : notDeployed
+                ? networkError
+                  ? "Can't reach Ethereum. Check your connection"
+                  : "Pool not available on this network"
+                : "Generate my secret note"}
           </button>
           <p className="mt-4 text-xs leading-relaxed text-muted">
             Nothing is sent yet. The next step shows your note so you can save
@@ -329,9 +302,9 @@ function DepositContent() {
         </>
       )}
 
-      {(phase === "note" || busy) && generated && activePool && (
+      {(phase === "note" || busy) && generated && (
         <div className="mt-8 space-y-5">
-          <NotePanel note={generated.note} poolId={activePool.id} />
+          <NotePanel note={generated.note} poolId={pool.id} />
 
           <label className="flex items-start gap-3 text-sm leading-relaxed text-ink-soft">
             <input
@@ -350,26 +323,26 @@ function DepositContent() {
             disabled={!savedConfirmed || busy}
             className="btn-primary w-full"
           >
-            {busy ? depositButtonLabel() : `Deposit ${activePool.label}`}
+            {busy ? depositButtonLabel() : `Deposit ${pool.label}`}
           </button>
         </div>
       )}
 
-      {phase === "done" && generated && activePool && (
+      {phase === "done" && generated && (
         <div className="mt-8 space-y-5">
           <div className="rounded-xl border border-line bg-ivory p-5">
             <p className="font-serif text-xl font-medium tracking-tight">
               Deposit confirmed.
             </p>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              Your {activePool.label} is in the pool.{" "}
+              Your {pool.label} is in the pool.{" "}
               {countdown !== null && countdown > 0
                 ? `The privacy delay is running. Withdrawals unlock in about ${formatCountdown(countdown)}.`
                 : "The privacy delay has passed. You can withdraw now."}
             </p>
             {countdown !== null && countdown > 0 && (
               <p className="mt-2 text-xs leading-relaxed text-muted">
-                The wait is what keeps your deposit private: withdrawing
+                The wait is what keeps your deposit privacy: withdrawing
                 instantly would make it easy to link the two.
               </p>
             )}
@@ -384,7 +357,7 @@ function DepositContent() {
               </a>
             )}
           </div>
-          <NotePanel note={generated.note} poolId={activePool.id} />
+          <NotePanel note={generated.note} poolId={pool.id} />
           <div className="flex flex-wrap gap-3">
             <Link href="/withdraw" className="btn-primary">
               Go to withdraw

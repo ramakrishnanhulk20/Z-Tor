@@ -44,7 +44,7 @@ Your encrypted balance lives on Ethereum. Observers see a ciphertext handle, not
 
 Go to **Deposit**:
 
-1. Choose a **fixed pool** (0.1 cWETH, 1 cWETH, 100 cUSDC, 1,000 cUSDC) or a **custom amount**
+1. Choose one of the **four fixed pools** (0.1 cWETH, 1 cWETH, 100 cUSDC, 1,000 cUSDC)
 2. Click **Generate my secret note**
 3. **Save the note** — copy it, download the file, write it offline. **If you lose it, funds are gone forever.**
 4. Check the box confirming you saved it
@@ -56,7 +56,9 @@ Go to **Deposit**:
 |------|--------------|------------------------|
 | Balance check | "Checking confidential balance…" | App reads your encrypted token balance (may ask for a wallet signature to decrypt locally) |
 | Top up (only if needed) | "Minting…" or "Shielding…" | If you are short, mints test tokens and shields them — **skipped if you already have enough from the Shield page** |
-| Deposit | "Confirm deposit in wallet" | One transaction sends encrypted tokens to the pool via Zama FHE |
+| Deposit | "Confirm deposit in wallet" | One transaction on Zama's cWETH/cUSDC wrapper forwards encrypted tokens into the Z-Tor pool |
+
+**Why MetaMask shows cWETH or cUSDC:** Z-Tor pools only accept confidential tokens. You sign against Zama's official wrapper contract; it forwards your deposit to the Z-Tor pool looked up from the registry. MetaMask labels the contract you interact with — the token wrapper — not the pool itself.
 
 **Tip:** Shield first on the Shield page if you want full control. Deposit only tops up what is missing.
 

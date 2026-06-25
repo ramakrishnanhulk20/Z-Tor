@@ -9,7 +9,7 @@ Start here if you are new to the project.
 | Document | What it covers |
 |----------|----------------|
 | [USER_GUIDE.md](./USER_GUIDE.md) | Shield, deposit, withdraw — step by step |
-| [POOLS.md](./POOLS.md) | Fixed tiers and custom pools |
+| [POOLS.md](./POOLS.md) | Fixed tiers and deposit flow |
 | [PRIVACY_AND_COMPLIANCE.md](./PRIVACY_AND_COMPLIANCE.md) | What is private, what is not, voluntary disclosure |
 
 Use the in-app **FAQ** at `/faq` for quick answers.

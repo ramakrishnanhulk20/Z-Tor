@@ -44,7 +44,11 @@ const faqs = [
   },
   {
     q: "Why can I only deposit fixed amounts?",
-    a: "Fixed pools (0.1 cWETH, 1 cWETH, 100 cUSDC, 1,000 cUSDC) give the strongest privacy because every deposit looks identical. You can also create a custom-amount pool, but privacy is weaker until more people use that exact amount.",
+    a: "Fixed pools (0.1 cWETH, 1 cWETH, 100 cUSDC, 1,000 cUSDC) give the strongest privacy because every deposit looks identical. Custom amounts are on the roadmap but not in the app yet.",
+  },
+  {
+    q: "Why does MetaMask show cWETH or cUSDC instead of a Z-Tor address?",
+    a: "Z-Tor pools hold Zama confidential tokens, not plain ETH or USDC. When you deposit, you sign a transaction on Zama's official cWETH or cUSDC wrapper (0x4620… on Sepolia for cWETH). That wrapper forwards your encrypted tokens into the Z-Tor pool contract. The pool address is looked up from the Z-Tor registry before you confirm — MetaMask just labels the contract you sign against, which is the token wrapper.",
   },
   {
     q: "Why do I have to wait 10 minutes to withdraw?",

@@ -42,10 +42,11 @@ Deployed to Sepolia — addresses in [DEPLOYMENTS.md](./DEPLOYMENTS.md).
 - [x] Encrypted aggregate stats demo — `/stats`
 - [x] Security review checklist — [SECURITY_CHECKLIST.md](./SECURITY_CHECKLIST.md)
 - [x] Optional relayer for gas abstraction (circuit + contracts + `apps/relayer`)
-- [x] Custom amount pools (`ZTorPoolFactory` + deposit UI)
 - [x] Proving-asset integrity checks + anonymity-set UI indicator
 
 ## Phase 3 — Mainnet readiness
+
+- [ ] Custom amount pools (`ZTorPoolFactory` + deposit UI) — contract deployed on Sepolia; UI upcoming
 
 - [ ] Legal / jurisdiction review
 - [ ] Mainnet deployment plan (separate from testnet)

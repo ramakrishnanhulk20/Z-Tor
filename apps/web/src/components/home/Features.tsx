@@ -9,7 +9,7 @@ const principles = [
   },
   {
     title: "Fixed amounts",
-    body: "Every deposit in a pool is identical, so no amount can give you away. Custom amounts are available but privacy is stronger on the main tiers.",
+    body: "Every deposit in a pool is identical, so no amount can give you away. Four fixed tiers keep anonymity sets as strong as possible.",
   },
   {
     title: "You hold the key",

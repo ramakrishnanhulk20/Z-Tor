@@ -10,8 +10,6 @@ export type PoolTier = {
   /** Fixed confidential-token units the pool expects (6 decimals). */
   confidentialAmount: bigint;
   decimals: number;
-  /** True when created via the permissionless factory (custom denomination). */
-  custom?: boolean;
 };
 
 import { toConfidentialUnits } from "@/config/zama";
@@ -42,24 +40,5 @@ export const POOL_TIERS: PoolTier[] = [
   usdc("usdc-100", "100 cUSDC", "100", 100_000_000n),
   usdc("usdc-1000", "1,000 cUSDC", "1000", 1_000_000_000n),
 ];
-
-export const POOL_LIMITS = {
-  ETH: {
-    minWei: 10_000_000_000_000_000n, // 0.01 WETH underlying
-    maxWei: 10_000_000_000_000_000_000n, // 10 WETH
-    minConfidential: 10_000n,
-    maxConfidential: 10_000_000n,
-    minLabel: "0.01",
-    maxLabel: "10",
-  },
-  USDC: {
-    minWei: 1_000_000n,
-    maxWei: 100_000_000_000n,
-    minConfidential: 1_000_000n,
-    maxConfidential: 100_000_000_000n,
-    minLabel: "1",
-    maxLabel: "100,000",
-  },
-} as const;
 
 export const ANONYMITY_DELAY_SECONDS = 600;

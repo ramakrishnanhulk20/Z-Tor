@@ -34,7 +34,6 @@ Required variables:
 | `NEXT_PUBLIC_SEPOLIA_RPC_URL` | Sepolia JSON-RPC |
 | `NEXT_PUBLIC_ZTOR_REGISTRY` | Pool registry address |
 | `NEXT_PUBLIC_DEPLOY_BLOCK` | First block to scan for deposits |
-| `NEXT_PUBLIC_ZTOR_FACTORY` | Custom pool factory |
 | `NEXT_PUBLIC_RELAYER_URL` | Optional — `http://localhost:8787` |
 
 See [DEPLOYMENTS.md](./DEPLOYMENTS.md) for current Sepolia values.
