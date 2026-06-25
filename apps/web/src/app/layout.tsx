@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Inter, Source_Serif_4 } from "next/font/google";
 import { PhaseBanner } from "@/components/PhaseBanner";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { ToastProvider } from "@/components/toast/ToastProvider";
 import { Web3Provider } from "@/providers/Web3Provider";
 import "./globals.css";
@@ -55,9 +53,7 @@ export default function RootLayout({
         <Web3Provider>
           <ToastProvider>
             <PhaseBanner />
-            <SiteHeader />
-            <main className="min-h-[calc(100vh-12rem)]">{children}</main>
-            <SiteFooter />
+            {children}
           </ToastProvider>
         </Web3Provider>
       </body>

@@ -26,7 +26,7 @@ export function PoolsShowcase() {
       <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {POOL_TIERS.map((pool, i) => (
           <ScrollReveal key={pool.id} delay={i * 0.1} variant={i % 2 ? "fade-right" : "fade-left"}>
-            <PoolCard pool={pool} href={`/deposit?pool=${pool.id}`} />
+            <PoolCard pool={pool} href={`/app/deposit?pool=${pool.id}`} />
           </ScrollReveal>
         ))}
       </div>
@@ -41,7 +41,7 @@ export function PoolsShowcase() {
             funds cannot be recovered. Not by you, not by us, not by anyone.
             Write it down and keep it offline before you confirm a deposit.
           </p>
-          <Link href="/shield" className="link-arrow mt-4">
+          <Link href="/app/shield" className="link-arrow mt-4">
             Need cUSDC or cWETH? Shield tokens first →
           </Link>
         </div>

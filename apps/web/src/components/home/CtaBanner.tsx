@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { NETWORK_LABEL } from "@/config/display";
+import { docsPath } from "@/config/site";
 
 export function CtaBanner() {
   return (
@@ -30,23 +31,25 @@ export function CtaBanner() {
         </p>
         <div className="mt-9 flex flex-wrap justify-center gap-3">
           <Link
-            href="/shield"
+            href="/app"
             className="inline-flex items-center justify-center rounded-xl bg-ink px-6 py-3 text-sm font-medium text-paper transition-colors duration-200 hover:bg-ink/80"
           >
-            Shield tokens
+            Launch app
           </Link>
           <Link
-            href="/deposit"
+            href="/app/deposit"
             className="inline-flex items-center justify-center rounded-xl border border-white/40 px-6 py-3 text-sm font-medium text-white transition-colors duration-200 hover:border-white hover:bg-white/10"
           >
             Make a deposit
           </Link>
-          <Link
-            href="/faq"
+          <a
+            href={docsPath("faq")}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center rounded-xl border border-white/40 px-6 py-3 text-sm font-medium text-white transition-colors duration-200 hover:border-white hover:bg-white/10"
           >
             Read the FAQ
-          </Link>
+          </a>
         </div>
       </div>
     </section>

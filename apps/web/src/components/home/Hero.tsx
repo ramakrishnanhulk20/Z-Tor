@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { NETWORK_LABEL } from "@/config/display";
+import { docsPath } from "@/config/site";
 import { ScrollDownHint } from "@/components/home/ScrollDownHint";
 
 const facts = [
@@ -134,15 +135,20 @@ export function Hero() {
             you.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <Link href="/shield" className="btn-primary">
-              Shield tokens
+            <Link href="/app" className="btn-primary">
+              Launch app
             </Link>
-            <Link href="/deposit" className="btn-secondary">
+            <Link href="/app/deposit" className="btn-secondary">
               Make a deposit
             </Link>
-            <Link href="/how-it-works" className="btn-secondary">
+            <a
+              href={docsPath("how-it-works")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary"
+            >
               How it works
-            </Link>
+            </a>
           </div>
         </motion.div>
 

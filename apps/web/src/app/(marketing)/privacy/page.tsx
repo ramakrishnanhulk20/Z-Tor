@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { NETWORK_LABEL } from "@/config/display";
+import { docsPath } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Privacy & compliance | Z-Tor",
@@ -102,9 +102,14 @@ export default function PrivacyPage() {
       </div>
 
       <div className="mt-16">
-        <Link href="/how-it-works" className="link-arrow">
+        <a
+          href={docsPath("how-it-works")}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="link-arrow"
+        >
           Read how Z-Tor works →
-        </Link>
+        </a>
       </div>
     </div>
   );

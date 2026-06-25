@@ -251,7 +251,7 @@ function DepositContent() {
           {needsMintOrWrap && (
             <InfoBanner tone="warning" title="Need confidential tokens first" className="mt-6">
               No {confidentialLabel(pool.asset)} detected yet.{" "}
-              <Link href="/shield" className="font-medium text-coral underline underline-offset-2">
+              <Link href="/app/shield" className="font-medium text-coral underline underline-offset-2">
                 Shield on the Shield page
               </Link>{" "}
               for full control, or continue here and we will mint and shield only what is missing.
@@ -359,7 +359,7 @@ function DepositContent() {
           </div>
           <NotePanel note={generated.note} poolId={pool.id} />
           <div className="flex flex-wrap gap-3">
-            <Link href="/withdraw" className="btn-primary">
+            <Link href="/app/withdraw" className="btn-primary">
               Go to withdraw
             </Link>
             <button type="button" onClick={resetFlow} className="btn-secondary">

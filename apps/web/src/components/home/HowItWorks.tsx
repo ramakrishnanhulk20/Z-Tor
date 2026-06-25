@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { docsPath } from "@/config/site";
 import { ScrollReveal, ScrollLine } from "@/components/ScrollReveal";
 
 const steps = [
@@ -64,12 +65,17 @@ export function HowItWorks() {
 
       <ScrollReveal delay={0.2}>
         <div className="mt-8 flex flex-wrap items-center gap-4">
-          <Link href="/shield" className="btn-primary">
+          <Link href="/app/shield" className="btn-primary">
             Shield tokens first
           </Link>
-          <Link href="/how-it-works" className="link-arrow">
+          <a
+            href={docsPath("how-it-works")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="link-arrow"
+          >
             Read the full guide →
-          </Link>
+          </a>
         </div>
       </ScrollReveal>
     </section>

@@ -5,7 +5,7 @@
 **Confidential fixed-denomination privacy pools on Ethereum**  
 *Note-based unlinkability + Zama fhEVM + ERC-7984 confidential tokens*
 
-[🚀 Live App](https://z-tor-web.vercel.app) • [📚 Documentation](docs/README.md) • [🔍 Etherscan (Sepolia)](https://sepolia.etherscan.io/address/0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2#code)
+[🚀 Live App](https://z-tor-web.vercel.app/app) • [📚 Documentation](https://rams-4.gitbook.io/rams-docs) • [🔍 Etherscan (Sepolia)](https://sepolia.etherscan.io/address/0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2#code)
 
 [Features](#features) • [Architecture](#architecture) • [Quick Start](#quick-start) • [Smart Contracts](#smart-contracts) • [Test Results](#test-results)
 
@@ -17,10 +17,10 @@
 
 | Platform | URL |
 |----------|-----|
-| 🚀 **App** | [z-tor-web.vercel.app](https://z-tor-web.vercel.app) |
+| 🚀 **App** | [z-tor-web.vercel.app/app](https://z-tor-web.vercel.app/app) |
+| 📚 **Docs (GitBook)** | [rams-4.gitbook.io/rams-docs](https://rams-4.gitbook.io/rams-docs) |
 | ⚡ **Relayer** | [z-tor-web.vercel.app/api/relayer/info](https://z-tor-web.vercel.app/api/relayer/info) |
-| 📖 **User guide** | [docs/USER_GUIDE.md](docs/USER_GUIDE.md) |
-| 🛠 **Local dev** | `http://localhost:3000` (after `npm run dev:web`) |
+| 🛠 **Local dev** | `http://localhost:3000` (landing) · `/app` (dApp) |
 
 Connect **MetaMask** to **Sepolia**. You need a little test ETH for gas. **Testnet only — no mainnet.**
 
@@ -439,19 +439,17 @@ Full map: [docs/REPOSITORY_STRUCTURE.md](docs/REPOSITORY_STRUCTURE.md)
 
 ## Documentation
 
-| Doc | Audience |
-|-----|----------|
-| [docs/README.md](docs/README.md) | Documentation index |
-| [docs/USER_GUIDE.md](docs/USER_GUIDE.md) | Non-technical walkthrough |
-| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design |
-| [docs/DEPLOYMENTS.md](docs/DEPLOYMENTS.md) | Sepolia addresses + env |
-| [docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md) | Deploy web + relayer on Vercel |
-| [docs/PRIVACY_AND_COMPLIANCE.md](docs/PRIVACY_AND_COMPLIANCE.md) | Privacy boundary |
-| [docs/ROADMAP.md](docs/ROADMAP.md) | Project phases |
+All guides live on **GitBook** (synced from the `docs/` folder). Setup: [docs/GITBOOK_SETUP.md](docs/GITBOOK_SETUP.md).
 
-In-app: **FAQ** (`/faq`), **How it works** (`/how-it-works`).
+| Doc | Topic |
+|-----|-------|
+| [User guide](docs/USER_GUIDE.md) | Shield, deposit, withdraw |
+| [How it works](docs/HOW_IT_WORKS.md) | Product walkthrough |
+| [FAQ](docs/FAQ.md) | Common questions |
+| [Architecture](docs/ARCHITECTURE.md) | System design |
+| [Deployments](docs/DEPLOYMENTS.md) | Sepolia addresses |
 
-Official Zama protocol docs: [docs.zama.org/protocol](https://docs.zama.org/protocol)
+Marketing site: `/` · dApp: `/app` · Privacy: `/privacy`
 
 ---
 

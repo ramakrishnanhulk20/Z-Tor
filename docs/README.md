@@ -1,36 +1,43 @@
 # Z-Tor documentation
 
-Start here if you are new to the project.
+Welcome to the Z-Tor docs — hosted on [GitBook](https://www.gitbook.com/).
 
-**Live app (Sepolia):** [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app)
+**Live app (Sepolia):** [z-tor-web.vercel.app/app](https://z-tor-web.vercel.app/app)
 
-## For users (non-technical)
+**Published docs:** [rams-4.gitbook.io/rams-docs](https://rams-4.gitbook.io/rams-docs)
 
-| Document | What it covers |
-|----------|----------------|
-| [USER_GUIDE.md](./USER_GUIDE.md) | Shield, deposit, withdraw — step by step |
-| [POOLS.md](./POOLS.md) | Fixed tiers and deposit flow |
-| [PRIVACY_AND_COMPLIANCE.md](./PRIVACY_AND_COMPLIANCE.md) | What is private, what is not, voluntary disclosure |
+---
 
-Use the in-app **FAQ** at `/faq` for quick answers.
+## Using Z-Tor
 
-## For developers
+| Guide | What it covers |
+|-------|----------------|
+| [User guide](USER_GUIDE.md) | Shield, deposit, withdraw — step by step |
+| [How it works](HOW_IT_WORKS.md) | Plain-language product walkthrough |
+| [FAQ](FAQ.md) | Common questions |
+| [Pools](POOLS.md) | Fixed tiers and deposit flow |
+| [Privacy & compliance](PRIVACY_AND_COMPLIANCE.md) | What is private, voluntary disclosure |
 
-| Document | What it covers |
-|----------|----------------|
-| [GETTING_STARTED.md](./GETTING_STARTED.md) | Install, env, run locally |
-| [REPOSITORY_STRUCTURE.md](./REPOSITORY_STRUCTURE.md) | Where every folder lives |
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | Unlink layer vs FHE layer |
-| [DEPLOYMENTS.md](./DEPLOYMENTS.md) | Sepolia contract addresses |
-| [SECURITY_CHECKLIST.md](./SECURITY_CHECKLIST.md) | Pre-release review list |
-| [ROADMAP.md](./ROADMAP.md) | Completed and planned phases |
+## Developers
+
+| Guide | What it covers |
+|-------|----------------|
+| [Getting started](GETTING_STARTED.md) | Install, env, run locally |
+| [Architecture](ARCHITECTURE.md) | Unlink layer vs FHE layer |
+| [Repository structure](REPOSITORY_STRUCTURE.md) | Monorepo layout |
+| [Deployments](DEPLOYMENTS.md) | Sepolia contract addresses |
+| [Deploy on Vercel](DEPLOY_VERCEL.md) | Web + relayer hosting |
+| [Security checklist](SECURITY_CHECKLIST.md) | Pre-release review |
+| [Roadmap](ROADMAP.md) | Completed and planned phases |
 
 ## External references
 
 - [Zama protocol docs](https://docs.zama.org/protocol)
 - [Zama Sepolia token addresses](https://docs.zama.org/protocol/protocol-apps/addresses/testnet/sepolia)
-- [fhEVM skill / lint rules](https://github.com/0xE1337/fhevm-skill)
+- [fhEVM lint rules](https://github.com/0xE1337/fhevm-skill)
 
 ## Product vision
 
-See [VISION.md](./VISION.md) for why Z-Tor exists and what problem it solves.
+See [Vision](VISION.md) for why Z-Tor exists.
+
+Maintainers: see [GitBook setup](GITBOOK_SETUP.md) to connect this folder to GitBook.

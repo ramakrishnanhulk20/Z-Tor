@@ -4,7 +4,7 @@
 
 | Service | URL |
 |---------|-----|
-| Web app | [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app) |
+| Web app | [https://z-tor-web.vercel.app/app](https://z-tor-web.vercel.app/app) |
 | Relayer (built-in) | [https://z-tor-web.vercel.app/api/relayer/info](https://z-tor-web.vercel.app/api/relayer/info) |
 
 Hosted on Vercel (Next.js + relayer API routes). Connect MetaMask to **Sepolia**.

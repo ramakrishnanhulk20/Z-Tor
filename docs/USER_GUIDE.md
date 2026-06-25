@@ -93,17 +93,17 @@ After success, the note is **spent** — it cannot be used again.
 
 ## Optional features
 
-### Stats (`/stats`)
+### Stats (`/app/stats`)
 
 See public deposit counts and **encrypted** pool TVL / active-note handles — a live fhEVM demo.
 
-### Disclosure (`/disclose`)
+### Disclosure (`/app/disclose`)
 
 Generate a JSON report proving what **one note** did — for an auditor or tax helper. Only you can create it. Sharing reveals that note's history only.
 
-### FAQ (`/faq`)
+### FAQ
 
-Common questions about notes, delays, wallets, and old deployments.
+See [FAQ](FAQ.md) in this documentation site.
 
 ---
 
@@ -118,7 +118,7 @@ Common questions about notes, delays, wallets, and old deployments.
 
 ## Need help?
 
-- Live app: [z-tor-web.vercel.app](https://z-tor-web.vercel.app)
-- In-app: [FAQ](/faq) and [How it works](/how-it-works)
+- Live app: [z-tor-web.vercel.app/app](https://z-tor-web.vercel.app/app)
+- [How it works](HOW_IT_WORKS.md) · [FAQ](FAQ.md)
 - Technical: [ARCHITECTURE.md](./ARCHITECTURE.md)
 - Contract addresses: [DEPLOYMENTS.md](./DEPLOYMENTS.md)

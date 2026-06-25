@@ -39,6 +39,7 @@ In **Project → Settings → Environment Variables**, add:
 | `NEXT_PUBLIC_ZTOR_REGISTRY` | `0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2` | Yes |
 | `NEXT_PUBLIC_DEPLOY_BLOCK` | `11114155` | Yes |
 | `NEXT_PUBLIC_RELAYER_URL` | Optional — omit on Vercel (uses `/api/relayer` on same domain); `http://localhost:8787` locally |
+| `NEXT_PUBLIC_DOCS_URL` | GitBook public URL (e.g. `https://z-tor.gitbook.io/z-tor`) |
 
 If `NEXT_PUBLIC_RELAYER_URL` is empty, the app uses **`https://z-tor-web.vercel.app/api/relayer`** (or your deployment’s origin + `/api/relayer`).
 

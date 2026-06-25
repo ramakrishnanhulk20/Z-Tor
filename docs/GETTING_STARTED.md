@@ -1,6 +1,6 @@
 # Getting started (developers)
 
-**Try the live app:** [https://z-tor-web.vercel.app](https://z-tor-web.vercel.app) (Sepolia testnet, no local setup needed).
+**Try the live app:** [https://z-tor-web.vercel.app/app](https://z-tor-web.vercel.app/app) (Sepolia testnet, no local setup needed).
 
 ## Prerequisites
 
@@ -35,6 +35,7 @@ Required variables:
 | `NEXT_PUBLIC_ZTOR_REGISTRY` | Pool registry address |
 | `NEXT_PUBLIC_DEPLOY_BLOCK` | First block to scan for deposits |
 | `NEXT_PUBLIC_RELAYER_URL` | Optional — `http://localhost:8787` |
+| `NEXT_PUBLIC_DOCS_URL` | GitBook docs URL — see [GITBOOK_SETUP.md](./GITBOOK_SETUP.md) |
 
 See [DEPLOYMENTS.md](./DEPLOYMENTS.md) for current Sepolia values.
 
