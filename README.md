@@ -350,6 +350,15 @@ ETHERSCAN_API_KEY=... npm run verify:sepolia -w @z-tor/contracts
     ✔ pays a relayer fee and rejects a relayer raising its own fee
     ✔ rejects a proof for a commitment that is not in the tree
 
+  ZTorConfidentialPool
+    ✔ disables the bare deposit(bytes32) entrypoint
+    ✔ rejects the receiver hook from a non-token caller
+    ✔ confirms an exact deposit, then withdraws the full amount to a fresh recipient
+    ✔ auto-refunds a wrong-amount deposit and rejects the finalize
+    ✔ reverts finalize for a commitment that was never deposited
+    ✔ rejects a second pending deposit for the same commitment
+    ✔ increments the encrypted active-note counter on finalize (with stats wired)
+
   ZTorERC20Pool
     ✔ pulls the exact token denomination on deposit
     ✔ rejects deposits that send ETH along
@@ -389,7 +398,7 @@ ETHERSCAN_API_KEY=... npm run verify:sepolia -w @z-tor/contracts
     ✔ rejects duplicates, zero addresses, and unknown lookups
     ✔ only lets the owner or a registrar register
 
-  34 passing
+  41 passing
 ```
 
 Run locally: `npm test -w @z-tor/contracts`  
