@@ -5,7 +5,7 @@
 **Confidential fixed-denomination privacy pools on Ethereum**  
 *Note-based unlinkability + Zama fhEVM + ERC-7984 confidential tokens*
 
-[🚀 Live App](https://z-tor-web.vercel.app/app) • [📚 Documentation](https://rams-4.gitbook.io/rams-docs) • [🔍 Etherscan (Sepolia)](https://sepolia.etherscan.io/address/0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2#code)
+[🚀 Live App](https://z-tor-web.vercel.app/app) • [📚 Documentation](https://rams-4.gitbook.io/rams-docs) • [▶️ Demo Video](https://youtu.be/g2d4cOc6hzA) • [📝 X Article](https://x.com/ram_krish2000/status/2070443791769608579) • [🔍 Etherscan (Sepolia)](https://sepolia.etherscan.io/address/0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2#code)
 
 [Features](#features) • [Architecture](#architecture) • [Quick Start](#quick-start) • [Smart Contracts](#smart-contracts) • [Test Results](#test-results)
 
@@ -19,6 +19,8 @@
 |----------|-----|
 | 🚀 **App** | [z-tor-web.vercel.app/app](https://z-tor-web.vercel.app/app) |
 | 📚 **Docs (GitBook)** | [rams-4.gitbook.io/rams-docs](https://rams-4.gitbook.io/rams-docs) |
+| ▶️ **Demo video (YouTube)** | [youtu.be/g2d4cOc6hzA](https://youtu.be/g2d4cOc6hzA) |
+| 📝 **X article** | [Why Z-Tor exists](https://x.com/ram_krish2000/status/2070443791769608579) |
 | ⚡ **Relayer** | [z-tor-web.vercel.app/api/relayer/info](https://z-tor-web.vercel.app/api/relayer/info) |
 | 🛠 **Local dev** | `http://localhost:3000` (landing) · `/app` (dApp) |
 
