@@ -418,7 +418,7 @@ Z-Tor/
 ├── docs/                       # Product & technical documentation
 ├── scripts/                    # Monorepo helper scripts
 ├── README.md                   # You are here
-└── AGENTS.md                   # Contributor / AI agent rules (fhEVM)
+└── AGENTS.md                   # Development guide (fhEVM conventions)
 ```
 
 Full map: [docs/REPOSITORY_STRUCTURE.md](docs/REPOSITORY_STRUCTURE.md)

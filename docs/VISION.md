@@ -31,4 +31,4 @@ Privacy-conscious individuals and teams who may later use mainnet in regulated m
 
 - Technically sound monorepo: contracts (Hardhat + fhEVM), web app, tests, documented architecture.
 - Outstanding UX: note safety, network warnings, step-by-step flows.
-- Code reads like a focused human team wrote it — small modules, consistent naming, no agent slop.
+- Maintainable codebase: small modules, consistent naming, and clear separation between components.

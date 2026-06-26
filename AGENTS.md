@@ -1,4 +1,4 @@
-# Agent guide — Z-Tor
+# Development guide — Z-Tor
 
 ## Project context
 
@@ -11,7 +11,7 @@ Z-Tor is a Sepolia testnet dApp: fixed pools (ETH + official Sepolia USDC), note
 
 ## fhEVM rules (mandatory for FHE contracts)
 
-Load or follow [fhevm-skill](https://github.com/0xE1337/fhevm-skill):
+Follow [fhevm-skill](https://github.com/0xE1337/fhevm-skill):
 
 - Never `FHE.decrypt()` on-chain (does not exist)
 - Never branch on `ebool` / encrypted values — use `FHE.select`
@@ -33,8 +33,8 @@ Unlink uses commitments + nullifiers + Merkle proofs (not FHE alone). Keep unlin
 ## Style
 
 - Small files, plain names, comments only for non-obvious invariants
-- No drive-by refactors outside the task
-- User is non-technical: UI copy must be clear and warn about lost notes
+- Keep changes scoped to the task at hand
+- UI copy should be clear for non-technical users and warn about lost notes
 
 ## Networks
 

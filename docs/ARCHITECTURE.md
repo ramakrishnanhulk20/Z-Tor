@@ -97,4 +97,4 @@ USDC on Sepolia: [Circle faucet](https://faucet.circle.com/) — contract addres
 
 - [Zama Protocol docs](https://docs.zama.org/protocol)
 - [fhEVM Hardhat template](https://github.com/zama-ai/fhevm-hardhat-template)
-- [fhEVM agent skill](https://github.com/0xE1337/fhevm-skill) — recommended for all FHE contract work
+- [fhEVM skill guide](https://github.com/0xE1337/fhevm-skill) — recommended reference for FHE contract work

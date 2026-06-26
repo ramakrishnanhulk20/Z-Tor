@@ -25,7 +25,7 @@ Z-Tor/
 ├── docs/                         # All project documentation
 ├── scripts/                      # Root-level automation
 ├── .tools/fhevm-skill/           # fhEVM lint (git submodule or vendored)
-├── AGENTS.md                     # Agent / contributor rules
+├── AGENTS.md                     # Development guide (fhEVM conventions)
 ├── README.md                     # Project overview + test results
 └── package.json                  # Workspace root scripts
 ```
@@ -55,7 +55,7 @@ Z-Tor/
 ## Why monorepo?
 
 - **Contracts** and **frontend** share pool IDs, denominations, and ABIs
-- One `npm install` for judges / reviewers
+- One `npm install` for new contributors and reviewers
 - Deploy artifacts in `packages/contracts/deployments/` stay next to source
 
-We do **not** flatten contracts into the web folder — that would duplicate sources and break Hardhat. The layout above matches what Zama dApp submissions expect: clear separation of **contracts**, **frontend**, and **tests**.
+We do **not** flatten contracts into the web folder — that would duplicate sources and break Hardhat. The layout keeps a clear separation of **contracts**, **frontend**, and **tests**.
