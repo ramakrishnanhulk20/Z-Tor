@@ -262,7 +262,7 @@ Set `NEXT_PUBLIC_ZTOR_REGISTRY` and `NEXT_PUBLIC_DEPLOY_BLOCK` — values in [do
 # Compile contracts
 npm run compile -w @z-tor/contracts
 
-# Run tests (mock FHE locally — auto-builds ZK circuit on first run)
+# Run tests (mock FHE locally — uses committed Groth16 proving assets)
 npm test -w @z-tor/contracts
 
 # Rebuild ZK circuit manually (after changing circuits/withdraw.circom)
@@ -403,7 +403,7 @@ ETHERSCAN_API_KEY=... npm run verify:sepolia -w @z-tor/contracts
   41 passing
 ```
 
-Run locally: `npm test -w @z-tor/contracts` (first run builds the Groth16 circuit automatically; ~1–2 min).  
+Run locally: `npm test -w @z-tor/contracts` (copies committed Groth16 proving assets on first run).  
 Tests use **Hardhat mock FHE**; Sepolia uses Zama's live fhEVM coprocessor.
 
 ---

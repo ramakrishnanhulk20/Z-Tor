@@ -67,17 +67,21 @@ function compileCircuit() {
   console.log("compiling withdraw.circom…");
   const circomlibRoot = resolveCircomlibIncludePath();
   const { command, prefixArgs } = resolveCircomInvocation();
+  const circuitFile = path.join(ROOT, "circuits", "withdraw.circom");
+  const outputDir = BUILD;
+  // circom2 rewrites non-flag args to paths relative to cwd — keep -l relative too.
+  const includePath = path.relative(ROOT, circomlibRoot) || ".";
   execFileSync(
     command,
     [
       ...prefixArgs,
-      path.join(ROOT, "circuits", "withdraw.circom"),
+      path.relative(ROOT, circuitFile),
       "--r1cs",
       "--wasm",
       "-o",
-      BUILD,
+      path.relative(ROOT, outputDir) || ".",
       "-l",
-      circomlibRoot,
+      includePath,
     ],
     { stdio: "inherit", cwd: ROOT },
   );

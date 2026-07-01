@@ -84,8 +84,8 @@ Update `docs/DEPLOYMENTS.md` and web `.env.local` after deploy.
 
 ## ZK circuit
 
-Fresh clones do not include generated proving files (`circuits/build/` is gitignored).  
-`npm test` runs a **pretest** step that builds them automatically when missing.
+Fresh clones do not include generated build scratch files (`circuits/build/` is gitignored).  
+Committed proving assets live in `circuits/proving/`; `npm test` copies them automatically — **no circom install needed**.
 
 To rebuild after editing `packages/contracts/circuits/withdraw.circom`:
 
@@ -103,6 +103,6 @@ Artifacts land in `packages/contracts/circuits/build/` and `apps/web/public/zk/`
 | `confidentialBalanceOf` reverts | Wrong token address — must use cUSDC/cWETH wrapper, not plain ERC-20 |
 | Withdraw "note not found" | Wrong pool deployment — use note from current registry pools |
 | Relayer offline | Start `npm run dev:relayer` or withdraw from wallet |
-| Tests show `3 pending` | Run `npm run build:circuit -w @z-tor/contracts`, or set `ZTOR_SKIP_CIRCUIT_BUILD=1` only if assets already exist |
+| Tests show `3 pending` | Run `git pull` — proving assets ship in `packages/contracts/circuits/proving/` |
 
 More: [USER_GUIDE.md](./USER_GUIDE.md), root [README.md](../README.md).
