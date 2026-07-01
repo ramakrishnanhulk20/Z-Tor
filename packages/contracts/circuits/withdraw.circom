@@ -1,6 +1,6 @@
 pragma circom 2.0.0;
 
-include "circomlib/circuits/poseidon.circom";
+include "circuits/poseidon.circom";
 
 // Proves membership of Poseidon(nullifier, secret) in the commitment tree
 // without revealing which leaf it is.

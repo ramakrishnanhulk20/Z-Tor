@@ -46,9 +46,26 @@ function resolveCircomInvocation() {
   return { command: process.execPath, prefixArgs: [circom2Cli] };
 }
 
+function resolveCircomlibIncludePath() {
+  const pkgDir = path.dirname(require.resolve("circomlib/package.json"));
+  const poseidon = path.join(pkgDir, "circuits", "poseidon.circom");
+  if (fs.existsSync(poseidon)) return pkgDir;
+
+  const roots = [path.join(ROOT, "..", ".."), ROOT];
+  for (const root of roots) {
+    const candidate = path.join(root, "node_modules", "circomlib");
+    const candidatePoseidon = path.join(candidate, "circuits", "poseidon.circom");
+    if (fs.existsSync(candidatePoseidon)) return candidate;
+  }
+
+  throw new Error(
+    "circomlib circuits not found. From the repo root run: npm install",
+  );
+}
+
 function compileCircuit() {
   console.log("compiling withdraw.circom…");
-  const circomlibRoot = path.dirname(path.dirname(require.resolve("circomlib/package.json")));
+  const circomlibRoot = resolveCircomlibIncludePath();
   const { command, prefixArgs } = resolveCircomInvocation();
   execFileSync(
     command,
