@@ -27,7 +27,7 @@ export function Wordmark({
         alt="Z-Tor"
         width={size}
         height={size}
-        className="shrink-0 rounded-lg"
+        className="shrink-0 object-contain"
         priority
       />
       {showText && (
@@ -49,7 +49,7 @@ export function LogoMark({ size = 32, className = "" }: { size?: number; classNa
       alt="Z-Tor"
       width={size}
       height={size}
-      className={`shrink-0 rounded-md ${className}`}
+      className={`shrink-0 object-contain ${className}`}
     />
   );
 }
