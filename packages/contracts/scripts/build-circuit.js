@@ -34,19 +34,26 @@ async function downloadPtau() {
   console.log(`ptau saved (${(buffer.length / 1e6).toFixed(1)} MB)`);
 }
 
-function resolveCircomBinary() {
-  // Native binary (downloaded to .tools) is preferred; falls back to a
-  // circom on PATH for non-Windows environments.
-  const local = path.join(ROOT, "..", "..", ".tools", "circom.exe");
-  return fs.existsSync(local) ? local : "circom";
+function resolveCircomInvocation() {
+  // Windows dev: optional native binary in .tools/
+  const localExe = path.join(ROOT, "..", "..", ".tools", "circom.exe");
+  if (fs.existsSync(localExe)) {
+    return { command: localExe, prefixArgs: [] };
+  }
+
+  // npm dependency — works in Codespaces / Linux without a global circom install
+  const circom2Cli = require.resolve("circom2/cli.js");
+  return { command: process.execPath, prefixArgs: [circom2Cli] };
 }
 
 function compileCircuit() {
   console.log("compiling withdraw.circom…");
   const circomlibRoot = path.dirname(path.dirname(require.resolve("circomlib/package.json")));
+  const { command, prefixArgs } = resolveCircomInvocation();
   execFileSync(
-    resolveCircomBinary(),
+    command,
     [
+      ...prefixArgs,
       path.join(ROOT, "circuits", "withdraw.circom"),
       "--r1cs",
       "--wasm",

@@ -65,7 +65,7 @@ Open [http://localhost:3000](http://localhost:3000).
 # Compile
 npm run compile -w @z-tor/contracts
 
-# Test (mock FHE — fast, no Sepolia needed)
+# Test (mock FHE — first run auto-builds the ZK circuit, ~1–2 min)
 npm test -w @z-tor/contracts
 
 # fhEVM lint (required before contract PRs)
@@ -82,15 +82,18 @@ npm run deploy:sepolia -w @z-tor/contracts
 
 Update `docs/DEPLOYMENTS.md` and web `.env.local` after deploy.
 
-## ZK circuit rebuild
+## ZK circuit
 
-If you change `packages/contracts/circuits/`:
+Fresh clones do not include generated proving files (`circuits/build/` is gitignored).  
+`npm test` runs a **pretest** step that builds them automatically when missing.
+
+To rebuild after editing `packages/contracts/circuits/withdraw.circom`:
 
 ```bash
-npm run build:circuit
+npm run build:circuit -w @z-tor/contracts
 ```
 
-Artifacts land in `apps/web/public/zk/`.
+Artifacts land in `packages/contracts/circuits/build/` and `apps/web/public/zk/`.
 
 ## Troubleshooting
 
@@ -100,5 +103,6 @@ Artifacts land in `apps/web/public/zk/`.
 | `confidentialBalanceOf` reverts | Wrong token address — must use cUSDC/cWETH wrapper, not plain ERC-20 |
 | Withdraw "note not found" | Wrong pool deployment — use note from current registry pools |
 | Relayer offline | Start `npm run dev:relayer` or withdraw from wallet |
+| Tests show `3 pending` | Run `npm run build:circuit -w @z-tor/contracts`, or set `ZTOR_SKIP_CIRCUIT_BUILD=1` only if assets already exist |
 
 More: [USER_GUIDE.md](./USER_GUIDE.md), root [README.md](../README.md).

@@ -6,7 +6,9 @@
   "scripts": {
     "clean": "rimraf ./fhevmTemp ./artifacts ./cache ./coverage ./types ./coverage.json ./dist && npm run typechain",
     "build:circuit": "node scripts/build-circuit.js",
+    "ensure:circuit": "node scripts/ensure-circuit.js",
     "compile": "cross-env TS_NODE_TRANSPILE_ONLY=true hardhat compile",
+    "pretest": "node scripts/ensure-circuit.js",
     "test": "hardhat test",
     "test:sepolia": "hardhat test --network sepolia",
     "lint": "npm run lint:sol",

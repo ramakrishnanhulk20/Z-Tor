@@ -85,7 +85,9 @@ async function proveWithdraw(
 describe("Withdraw with real Groth16 proof", function () {
   before(function () {
     if (!existsSync(WASM) || !existsSync(ZKEY)) {
-      console.warn("circuit assets missing — run: node scripts/build-circuit.js");
+      console.warn(
+        "circuit assets missing — run: npm run build:circuit -w @z-tor/contracts",
+      );
       this.skip();
     }
   });
