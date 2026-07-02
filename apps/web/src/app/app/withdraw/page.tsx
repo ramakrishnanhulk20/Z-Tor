@@ -23,8 +23,9 @@ import {
   submitToRelayer,
   type RelayerInfo,
 } from "@/lib/relayer";
-import { prepareWithdraw } from "@/lib/withdraw";
-import { generateWithdrawProof, verifyWithdrawProofOnChain } from "@/lib/zk";
+import { prepareWithdraw, outOfSyncWithdrawMessage } from "@/lib/withdraw";
+import { generateWithdrawProof } from "@/lib/zk";
+import { errorDetail } from "@/lib/track-tx";
 import { FHE_GAS_CAP, writeWalletContract } from "@/lib/wallet-write";
 
 type Phase = "idle" | "scanning" | "proving" | "submitting" | "done";
@@ -135,11 +136,7 @@ export default function WithdrawPage() {
           title: "Pool history incomplete",
           detail: "Your RPC may not have returned all deposit events.",
         });
-        setErrorMessage(
-          "Could not rebuild the pool Merkle tree from deposit events. This usually means your " +
-            "Sepolia RPC returned incomplete history — set NEXT_PUBLIC_SEPOLIA_RPC_URL to an archive-capable " +
-            "endpoint (Alchemy, Infura, etc.), refresh, and try again.",
-        );
+        setErrorMessage(outOfSyncWithdrawMessage(prep.detail));
         return;
       }
       if (prep.kind === "waiting") {
@@ -195,28 +192,6 @@ export default function WithdrawPage() {
           detail: err instanceof Error ? err.message : "Could not build proof.",
         });
         throw err;
-      }
-
-      const verifierAddress = await publicClient.readContract({
-        address: poolAddress,
-        abi: poolAbi,
-        functionName: "verifier",
-      });
-      const proofValid = await verifyWithdrawProofOnChain(
-        publicClient,
-        verifierAddress,
-        proof,
-        prep.root,
-        prep.nullifierHash,
-        recipient as `0x${string}`,
-        relayerAddress,
-        fee,
-      );
-      if (!proofValid) {
-        throw new Error(
-          "The proof did not verify against the on-chain verifier. Refresh the page and try again — " +
-            "the app will rebuild your Merkle witness from the server.",
-        );
       }
 
       setPhase("submitting");
@@ -280,9 +255,7 @@ export default function WithdrawPage() {
       setErrorMessage(
         err instanceof RelayerError
           ? err.message
-          : err instanceof Error && err.message.includes("User rejected")
-            ? "Transaction was cancelled in your wallet."
-            : "The withdrawal failed. Your note is still valid. You can try again.",
+          : errorDetail(err),
       );
     }
   };

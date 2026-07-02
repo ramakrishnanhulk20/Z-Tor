@@ -20,7 +20,7 @@ function isUserRejected(err: unknown): boolean {
   return err instanceof Error && err.message.includes("User rejected");
 }
 
-function errorDetail(err: unknown): string {
+export function errorDetail(err: unknown): string {
   if (isUserRejected(err)) return "You declined the request in your wallet.";
   if (err instanceof Error) {
     if (err.message.includes("gas limit too high")) {

@@ -175,6 +175,12 @@ export const poolAbi = [
     inputs: [],
     outputs: [{ type: "address" }],
   },
+  { type: "error", name: "NoteAlreadySpent", inputs: [] },
+  { type: "error", name: "RootTooRecent", inputs: [] },
+  { type: "error", name: "UnknownRoot", inputs: [] },
+  { type: "error", name: "InvalidProof", inputs: [] },
+  { type: "error", name: "FeeExceedsDenomination", inputs: [] },
+  { type: "error", name: "FeeWithoutRelayer", inputs: [] },
 ] as const;
 
 export const groth16VerifierAbi = [

@@ -7,12 +7,16 @@ import { MerkleTree, getPoseidon, toBytes32, type MerklePath } from "@/lib/posei
 /** Most free Sepolia RPCs reject wide eth_getLogs ranges — keep chunks small. */
 const LOG_CHUNK_BLOCKS = 2_000n;
 const LOG_CHUNK_RETRIES = 3;
+const LOG_FETCH_CONCURRENCY = 8;
+const DEPOSIT_LOG_CACHE_TTL_MS = 60_000;
 
 const depositEvent = poolAbi.find(
   (item) => item.type === "event" && item.name === "Deposit",
 );
 
 type DepositLog = Awaited<ReturnType<PublicClient["getLogs"]>>[number];
+
+const depositLogCache = new Map<string, { at: number; logs: DepositLog[] }>();
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -45,23 +49,39 @@ async function fetchLogChunk(
   throw lastErr;
 }
 
-/** Paginate eth_getLogs with small windows and retries. */
+/** Paginate eth_getLogs with small windows, parallel fetches, and retries. */
 export async function fetchDepositLogs(
   client: PublicClient,
   poolAddress: `0x${string}`,
   fromBlock: bigint = DEPLOY_BLOCK,
 ) {
+  const cacheKey = `${poolAddress.toLowerCase()}:${fromBlock.toString()}`;
+  const cached = depositLogCache.get(cacheKey);
+  if (cached && Date.now() - cached.at < DEPOSIT_LOG_CACHE_TTL_MS) {
+    return cached.logs;
+  }
+
   const latest = await client.getBlockNumber();
   const start = fromBlock > latest ? latest : fromBlock;
-  const logs: DepositLog[] = [];
+  const ranges: { from: bigint; to: bigint }[] = [];
 
   for (let from = start; from <= latest; from += LOG_CHUNK_BLOCKS) {
     const to = from + LOG_CHUNK_BLOCKS - 1n > latest ? latest : from + LOG_CHUNK_BLOCKS - 1n;
-    const chunk = await fetchLogChunk(client, poolAddress, from, to);
-    logs.push(...chunk);
+    ranges.push({ from, to });
   }
 
-  return dedupeDepositLogs(logs);
+  const logs: DepositLog[] = [];
+  for (let i = 0; i < ranges.length; i += LOG_FETCH_CONCURRENCY) {
+    const batch = ranges.slice(i, i + LOG_FETCH_CONCURRENCY);
+    const chunks = await Promise.all(
+      batch.map(({ from, to }) => fetchLogChunk(client, poolAddress, from, to)),
+    );
+    for (const chunk of chunks) logs.push(...chunk);
+  }
+
+  const deduped = dedupeDepositLogs(logs);
+  depositLogCache.set(cacheKey, { at: Date.now(), logs: deduped });
+  return deduped;
 }
 
 export function dedupeDepositLogs(logs: DepositLog[]): DepositLog[] {
@@ -163,12 +183,18 @@ export async function resolvePoolWitness(
   };
 }
 
-/** Browser helper — uses the server route (archive RPC) when the in-browser scan fails. */
+export type ServerWitnessResult =
+  | { ok: true; witness: PoolWitnessPayload }
+  | { ok: false; error: string; retryable: boolean };
+
+/** Browser helper — uses the server route (archive RPC) for the Merkle witness. */
 export async function fetchServerWitness(
   poolAddress: `0x${string}`,
   commitment: bigint,
-): Promise<PoolWitnessPayload | null> {
-  if (typeof window === "undefined") return null;
+): Promise<ServerWitnessResult> {
+  if (typeof window === "undefined") {
+    return { ok: false, error: "Witness fetch is browser-only.", retryable: false };
+  }
 
   try {
     const res = await fetch("/api/pool/witness", {
@@ -178,12 +204,49 @@ export async function fetchServerWitness(
         pool: poolAddress,
         commitment: toBytes32(commitment),
       }),
-      signal: AbortSignal.timeout(45_000),
+      signal: AbortSignal.timeout(55_000),
     });
-    if (!res.ok) return null;
-    return (await res.json()) as PoolWitnessPayload;
-  } catch {
-    return null;
+
+    const body = (await res.json().catch(() => ({}))) as {
+      error?: string;
+      root?: `0x${string}`;
+      pathElements?: `0x${string}`[];
+      pathIndices?: number[];
+      leafIndex?: number;
+    };
+
+    if (!res.ok) {
+      return {
+        ok: false,
+        error: body.error ?? `Witness request failed (${res.status}).`,
+        retryable: res.status === 503 || res.status === 504,
+      };
+    }
+
+    if (!body.root || !body.pathElements || !body.pathIndices) {
+      return { ok: false, error: "Witness response was incomplete.", retryable: true };
+    }
+
+    return {
+      ok: true,
+      witness: {
+        root: body.root,
+        pathElements: body.pathElements,
+        pathIndices: body.pathIndices,
+        leafIndex: body.leafIndex ?? 0,
+      },
+    };
+  } catch (err) {
+    const timedOut =
+      err instanceof Error &&
+      (err.name === "TimeoutError" || err.message.toLowerCase().includes("timeout"));
+    return {
+      ok: false,
+      error: timedOut
+        ? "Loading pool history timed out. Try again in a few seconds."
+        : "Could not reach the witness service.",
+      retryable: true,
+    };
   }
 }
 
@@ -191,7 +254,7 @@ export type WithdrawPreparation =
   | { kind: "not-found" }
   | { kind: "legacy-pool" }
   | { kind: "spent" }
-  | { kind: "out-of-sync" }
+  | { kind: "out-of-sync"; detail?: string }
   | { kind: "waiting"; readyAt: number }
   | {
       kind: "ready";
@@ -238,6 +301,13 @@ async function finalizeWithdrawPrep(
   return { kind: "ready", root, nullifierHash, path };
 }
 
+function witnessToPath(witness: PoolWitnessPayload): MerklePath {
+  return {
+    pathElements: witness.pathElements.map((x) => BigInt(x)),
+    pathIndices: witness.pathIndices,
+  };
+}
+
 /**
  * Rebuilds the pool's Merkle tree from Deposit events and checks whether the
  * note can be withdrawn yet. Secrets stay in the browser; only the commitment
@@ -261,34 +331,54 @@ export async function prepareWithdraw(
   });
   if (spent) return { kind: "spent" };
 
-  const serverWitness = await fetchServerWitness(poolAddress, commitment);
-  if (serverWitness) {
+  const server = await fetchServerWitness(poolAddress, commitment);
+  if (server.ok) {
     return finalizeWithdrawPrep(
       client,
       poolAddress,
-      BigInt(serverWitness.root),
+      BigInt(server.witness.root),
       nullifierHash,
-      {
-        pathElements: serverWitness.pathElements.map((x) => BigInt(x)),
-        pathIndices: serverWitness.pathIndices,
-      },
+      witnessToPath(server.witness),
     );
   }
 
+  if (!server.retryable) {
+    if (server.error.toLowerCase().includes("not found")) {
+      const legacy = await noteOnLegacyPool(client, note.poolId, commitment);
+      return legacy ? { kind: "legacy-pool" } : { kind: "not-found" };
+    }
+  }
+
   const resolved = await resolvePoolWitness(client, poolAddress, commitment);
-  if (resolved.status === "out-of-sync") return { kind: "out-of-sync" };
+  if (resolved.status === "ok") {
+    return finalizeWithdrawPrep(
+      client,
+      poolAddress,
+      resolved.root,
+      nullifierHash,
+      resolved.path,
+    );
+  }
+
   if (resolved.status === "not-found") {
     const legacy = await noteOnLegacyPool(client, note.poolId, commitment);
     return legacy ? { kind: "legacy-pool" } : { kind: "not-found" };
   }
 
-  return finalizeWithdrawPrep(
-    client,
-    poolAddress,
-    resolved.root,
-    nullifierHash,
-    resolved.path,
-  );
+  return {
+    kind: "out-of-sync",
+    detail: server.retryable ? server.error : undefined,
+  };
+}
+
+/** User-facing detail when prepareWithdraw returns out-of-sync. */
+export function outOfSyncWithdrawMessage(serverError?: string): string {
+  const base =
+    "Could not rebuild the pool Merkle tree from deposit events. Withdrawals need a complete deposit history.";
+  if (serverError) {
+    return `${base} Server: ${serverError} Ensure RPC_URL on Vercel is an archive-capable Sepolia endpoint (Alchemy/Infura), then refresh and retry.`;
+  }
+  return `${base} Set NEXT_PUBLIC_SEPOLIA_RPC_URL to an archive-capable Sepolia endpoint (Alchemy, Infura, etc.), refresh, and try again.`;
 }
 
 async function noteOnLegacyPool(
