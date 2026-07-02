@@ -10,7 +10,7 @@
   ],
   "files": {
     "withdraw.wasm": "cf2c66bbe57948b73c1a08eb35630bfd9397da2970a5d4fa50b37fcc524a719a",
-    "withdraw_final.zkey": "f5a6cd2b3cc352d6a7ac11b1a81d1dddb23e71668e31e0a9de73efd9981f559f",
-    "verification_key.json": "719f983358db0ed3923c777373cf9f0c0206787d44a27da44703d47fb3d0adbe"
+    "withdraw_final.zkey": "b332179066d19a036b25419244b3a5843195f4837b8b60d9be42961d5d2f0567",
+    "verification_key.json": "80b1c51d31f6e67c69c840ca42b0e2ecaee4e431508d76a261e51f1dbc6fcfc5"
   }
 }

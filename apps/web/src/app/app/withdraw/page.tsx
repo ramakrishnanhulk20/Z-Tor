@@ -24,7 +24,7 @@ import {
   type RelayerInfo,
 } from "@/lib/relayer";
 import { prepareWithdraw, outOfSyncWithdrawMessage } from "@/lib/withdraw";
-import { generateWithdrawProof } from "@/lib/zk";
+import { generateWithdrawProof, verifyWithdrawProofOnChain } from "@/lib/zk";
 import { errorDetail } from "@/lib/track-tx";
 import { FHE_GAS_CAP, writeWalletContract } from "@/lib/wallet-write";
 
@@ -180,6 +180,27 @@ export default function WithdrawPage() {
           secret: parsed.secret,
           path: prep.path,
         });
+        const verifierAddress = await publicClient.readContract({
+          address: poolAddress,
+          abi: poolAbi,
+          functionName: "verifier",
+        });
+        const proofValid = await verifyWithdrawProofOnChain(
+          publicClient,
+          verifierAddress,
+          proof,
+          prep.root,
+          prep.nullifierHash,
+          recipient as `0x${string}`,
+          relayerAddress,
+          fee,
+        );
+        if (!proofValid) {
+          throw new Error(
+            "The on-chain verifier rejected this proof. Refresh and try again; " +
+              "if it persists, the site proving keys may be out of sync with the deployed pools.",
+          );
+        }
         toast.update(proofId, {
           status: "success",
           title: "Proof ready",

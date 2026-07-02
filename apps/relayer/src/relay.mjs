@@ -136,7 +136,7 @@ const REVERT_MESSAGES = {
     "The privacy delay has not passed yet. Wait until the countdown on the withdraw page reaches zero, then try again.",
   UnknownRoot: "The pool state is out of sync — refresh the page and retry in a minute.",
   InvalidProof:
-    "The zero-knowledge proof did not verify on-chain. Refresh and try again; if it persists, your RPC may be returning incomplete deposit history.",
+    "The zero-knowledge proof did not verify on-chain. Refresh and try again. If it persists, the site proving keys may be out of sync with the deployed Groth16 verifier.",
   FeeExceedsDenomination: "Relayer fee exceeds the pool denomination.",
   FeeWithoutRelayer: "A relayer fee was set but no relayer address was provided.",
 };
