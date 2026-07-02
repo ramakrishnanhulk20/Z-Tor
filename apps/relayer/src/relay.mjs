@@ -52,6 +52,12 @@ const poolAbi = [
     ],
     outputs: [],
   },
+  { type: "error", name: "NoteAlreadySpent", inputs: [] },
+  { type: "error", name: "RootTooRecent", inputs: [] },
+  { type: "error", name: "UnknownRoot", inputs: [] },
+  { type: "error", name: "InvalidProof", inputs: [] },
+  { type: "error", name: "FeeExceedsDenomination", inputs: [] },
+  { type: "error", name: "FeeWithoutRelayer", inputs: [] },
 ];
 
 let clients;
@@ -126,9 +132,13 @@ function revertName(err) {
 
 const REVERT_MESSAGES = {
   NoteAlreadySpent: "This note has already been withdrawn.",
-  RootTooRecent: "The privacy delay has not passed yet.",
-  UnknownRoot: "The pool state is out of sync — retry in a minute.",
-  InvalidProof: "The proof did not verify. Regenerate it with this relayer's address and fee.",
+  RootTooRecent:
+    "The privacy delay has not passed yet. Wait until the countdown on the withdraw page reaches zero, then try again.",
+  UnknownRoot: "The pool state is out of sync — refresh the page and retry in a minute.",
+  InvalidProof:
+    "The zero-knowledge proof did not verify on-chain. Refresh and try again; if it persists, your RPC may be returning incomplete deposit history.",
+  FeeExceedsDenomination: "Relayer fee exceeds the pool denomination.",
+  FeeWithoutRelayer: "A relayer fee was set but no relayer address was provided.",
 };
 
 function errorText(err) {
@@ -148,11 +158,48 @@ function relayErrorMessage(err) {
   if (name) return `Withdraw reverted: ${name}.`;
   if (raw.includes("reverted")) {
     return (
-      "The withdrawal would revert on-chain. If this note is from an older deployment, " +
-      "deposit again with a fresh note on the current pools."
+      "The withdrawal would revert on-chain. Wait for the full privacy delay, refresh the page, " +
+      "and try again. If the note is from an older pool deployment, deposit again for a fresh note."
     );
   }
   return "The withdrawal transaction would fail.";
+}
+
+async function submitWithdraw(publicClient, walletClient, account, pool, args) {
+  try {
+    const { request } = await publicClient.simulateContract({
+      account,
+      address: pool,
+      abi: poolAbi,
+      functionName: "withdraw",
+      args,
+    });
+    return walletClient.writeContract(request);
+  } catch (simErr) {
+    // fhEVM confidential transfers sometimes fail eth_call simulation even when the tx succeeds.
+    const simName = revertName(simErr);
+    if (simName && REVERT_MESSAGES[simName]) throw simErr;
+
+    try {
+      await publicClient.estimateContractGas({
+        account,
+        address: pool,
+        abi: poolAbi,
+        functionName: "withdraw",
+        args,
+      });
+    } catch (gasErr) {
+      throw gasErr;
+    }
+
+    return walletClient.writeContract({
+      account,
+      address: pool,
+      abi: poolAbi,
+      functionName: "withdraw",
+      args,
+    });
+  }
 }
 
 export function getRelayerInfo() {
@@ -197,14 +244,13 @@ export async function handleRelay(body) {
 
   const args = [proof, root, nullifierHash, recipient, account.address, BigInt(fee)];
   try {
-    const { request } = await publicClient.simulateContract({
+    const txHash = await submitWithdraw(
+      publicClient,
+      walletClient,
       account,
-      address: pool,
-      abi: poolAbi,
-      functionName: "withdraw",
+      pool,
       args,
-    });
-    const txHash = await walletClient.writeContract(request);
+    );
     console.log(`relayed withdraw → ${txHash} (pool ${pool})`);
     return [200, { txHash }];
   } catch (err) {

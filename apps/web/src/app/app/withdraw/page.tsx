@@ -132,10 +132,14 @@ export default function WithdrawPage() {
         setPhase("idle");
         toast.push({
           status: "error",
-          title: "Pool syncing",
-          detail: "Try again in about a minute.",
+          title: "Pool history incomplete",
+          detail: "Your RPC may not have returned all deposit events.",
         });
-        setErrorMessage("The pool state looks out of sync. Please try again in a minute.");
+        setErrorMessage(
+          "Could not rebuild the pool Merkle tree from deposit events. This usually means your " +
+            "Sepolia RPC returned incomplete history — set NEXT_PUBLIC_SEPOLIA_RPC_URL to an archive-capable " +
+            "endpoint (Alchemy, Infura, etc.), refresh, and try again.",
+        );
         return;
       }
       if (prep.kind === "waiting") {
@@ -151,9 +155,14 @@ export default function WithdrawPage() {
       }
 
       const relayerAddress = relaying ? relayerInfo.relayer : zeroAddress;
+      const denomination = await publicClient.readContract({
+        address: poolAddress,
+        abi: poolAbi,
+        functionName: "denomination",
+      });
       const fee =
-        relaying && pool
-          ? relayerFee(pool.confidentialAmount, relayerInfo.feeBasisPoints)
+        relaying && relayerInfo
+          ? relayerFee(denomination, relayerInfo.feeBasisPoints)
           : 0n;
 
       setPhase("proving");
@@ -428,10 +437,11 @@ export default function WithdrawPage() {
                 You receive{" "}
                 <span className="font-medium text-ink">
                   {formatUnits(
-                    pool.amountWei - relayerFee(pool.amountWei, relayerInfo.feeBasisPoints),
-                    pool.decimals,
+                    pool.confidentialAmount -
+                      relayerFee(pool.confidentialAmount, relayerInfo.feeBasisPoints),
+                    6,
                   )}{" "}
-                  {pool.asset}
+                  {confidentialLabel(pool.asset)}
                 </span>{" "}
                 after the relayer fee.
               </p>

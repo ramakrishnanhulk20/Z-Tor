@@ -37,7 +37,7 @@ In **Project → Settings → Environment Variables**, add:
 | `NEXT_PUBLIC_CHAIN_ID` | `11155111` | Yes |
 | `NEXT_PUBLIC_SEPOLIA_RPC_URL` | `https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY` | Yes |
 | `NEXT_PUBLIC_ZTOR_REGISTRY` | `0x21E4D83C5C4329Cad8f59bc7408C49d24A3D39d2` | Yes |
-| `NEXT_PUBLIC_DEPLOY_BLOCK` | `11114155` | Yes |
+| `NEXT_PUBLIC_DEPLOY_BLOCK` | `11136756` | Yes |
 | `NEXT_PUBLIC_RELAYER_URL` | Optional — omit on Vercel (uses `/api/relayer` on same domain); `http://localhost:8787` locally |
 | `NEXT_PUBLIC_DOCS_URL` | GitBook public URL (e.g. `https://z-tor.gitbook.io/z-tor`) |
 
