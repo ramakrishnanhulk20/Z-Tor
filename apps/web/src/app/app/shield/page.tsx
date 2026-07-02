@@ -5,7 +5,7 @@ import { formatUnits } from "viem";
 import {
   NoCiphertextError,
   useConfidentialBalance,
-  useShield,
+  useZamaSDK,
 } from "@zama-fhe/react-sdk";
 import {
   useAccount,
@@ -21,7 +21,7 @@ import type { PoolAsset } from "@/config/pools";
 import { confidentialWrapper, underlyingToken, ZAMA_SEPOLIA } from "@/config/zama";
 import { useTxToast } from "@/hooks/useTxToast";
 import { isEncryptedHandle } from "@/lib/decrypt-balance";
-import { ensureUnderlyingBalance } from "@/lib/confidential";
+import { ensureUnderlyingBalance, wrapToConfidential } from "@/lib/confidential";
 
 const ASSETS: PoolAsset[] = ["USDC", "ETH"];
 const MINT_AMOUNT = {
@@ -43,16 +43,12 @@ function AssetCard({ asset }: { asset: PoolAsset }) {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { toast, tracker } = useTxToast();
+  const sdk = useZamaSDK();
 
   const [busy, setBusy] = useState<string>();
   const [error, setError] = useState<string>();
   const [revealBalance, setRevealBalance] = useState(false);
   const [decryptToastId, setDecryptToastId] = useState<string>();
-
-  const { mutateAsync: shield } = useShield({
-    tokenAddress: underlying,
-    wrapperAddress: wrapper,
-  });
 
   const {
     data: decrypted,
@@ -143,7 +139,7 @@ function AssetCard({ asset }: { asset: PoolAsset }) {
 
   const handleShield = () =>
     run("shield", async () => {
-      if (!address || !walletClient || !publicClient) return;
+      if (!address || !walletClient || !publicClient || !sdk) return;
       const amount = plainBalance && plainBalance > 0n ? plainBalance : MINT_AMOUNT[asset];
       const tx = tracker();
       await ensureUnderlyingBalance(
@@ -154,15 +150,14 @@ function AssetCard({ asset }: { asset: PoolAsset }) {
         amount,
         tx,
       );
-      await tx.run(
-        {
-          pendingTitle: `Shielding to ${symbol}`,
-          pendingDetail: "Encrypting your balance on-chain.",
-          successTitle: `${symbol} shielded`,
-          successDetail: "Your confidential balance is ready.",
-          errorTitle: "Shield failed",
-        },
-        () => shield({ amount }).then((result) => result.txHash),
+      await wrapToConfidential(
+        sdk,
+        publicClient,
+        walletClient,
+        asset,
+        address,
+        amount,
+        tx,
       );
       setRevealBalance(false);
       await refetchPlain();

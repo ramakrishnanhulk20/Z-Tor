@@ -72,17 +72,93 @@ export async function ensureUnderlyingBalance(
   await publicClient.waitForTransactionReceipt({ hash });
 }
 
+/** Zama SDK `token.shield()` submits ERC-20 approve without waiting for receipt — wait here first. */
+async function ensureUnderlyingApproval(
+  publicClient: PublicClient,
+  walletClient: WalletClient,
+  asset: PoolAsset,
+  userAddress: `0x${string}`,
+  amount: bigint,
+  tracker?: TxTracker,
+) {
+  const underlying = underlyingToken(asset);
+  const wrapper = confidentialWrapper(asset);
+  const plain = asset === "ETH" ? "WETH" : "USDC";
+
+  const allowance = await publicClient.readContract({
+    address: underlying,
+    abi: mintableErc20Abi,
+    functionName: "allowance",
+    args: [userAddress, wrapper],
+  });
+  if (allowance >= amount) return;
+
+  const sendApprove = (value: bigint) => () =>
+    writeWalletContract({
+      walletClient,
+      publicClient,
+      account: userAddress,
+      address: underlying,
+      abi: mintableErc20Abi,
+      functionName: "approve",
+      args: [wrapper, value],
+      gasCap: STANDARD_GAS_CAP,
+    });
+
+  if (allowance > 0n) {
+    const resetOpts = {
+      pendingTitle: `Reset ${plain} approval`,
+      pendingDetail: "Preparing a new allowance for shielding.",
+      successTitle: "Allowance reset",
+      successDetail: "Confirmed on-chain.",
+      errorTitle: "Reset failed",
+    };
+    if (tracker) {
+      await tracker.run(resetOpts, sendApprove(0n));
+    } else {
+      const hash = await sendApprove(0n)();
+      await publicClient.waitForTransactionReceipt({ hash });
+    }
+  }
+
+  const approveOpts = {
+    pendingTitle: `Approve ${plain}`,
+    pendingDetail: "Allow the wrapper to shield your tokens.",
+    successTitle: `${plain} approved`,
+    successDetail: "Approval confirmed. Starting shield.",
+    errorTitle: "Approval failed",
+  };
+  if (tracker) {
+    await tracker.run(approveOpts, sendApprove(amount));
+  } else {
+    const hash = await sendApprove(amount)();
+    await publicClient.waitForTransactionReceipt({ hash });
+  }
+}
+
 export async function wrapToConfidential(
   sdk: ZamaSDK,
+  publicClient: PublicClient,
+  walletClient: WalletClient,
   asset: PoolAsset,
+  userAddress: `0x${string}`,
   underlyingAmount: bigint,
   tracker?: TxTracker,
 ) {
   const token = confidentialToken(sdk, asset);
   const symbol = CONFIDENTIAL_SYMBOL[asset];
 
+  await ensureUnderlyingApproval(
+    publicClient,
+    walletClient,
+    asset,
+    userAddress,
+    underlyingAmount,
+    tracker,
+  );
+
   const shield = async () => {
-    const { txHash } = await token.shield(underlyingAmount);
+    const { txHash } = await token.shield(underlyingAmount, { approvalStrategy: "skip" });
     return txHash;
   };
 
@@ -169,7 +245,15 @@ export async function ensureConfidentialBalance(
   }
 
   onStep?.("shielding");
-  await wrapToConfidential(sdk, asset, underlyingAmount, tracker);
+  await wrapToConfidential(
+    sdk,
+    publicClient,
+    walletClient,
+    asset,
+    userAddress,
+    underlyingAmount,
+    tracker,
+  );
   shielded = true;
   onStep?.("ready");
 
