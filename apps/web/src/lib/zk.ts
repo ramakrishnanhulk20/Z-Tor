@@ -7,6 +7,9 @@ const WASM_PATH = "/zk/withdraw.wasm";
 const ZKEY_PATH = "/zk/withdraw_final.zkey";
 const MANIFEST_PATH = "/zk/manifest.json";
 
+/** Only the files the browser prover loads — skip verification_key.json (ops/diagnostic). */
+const PROVING_FILES = ["withdraw.wasm", "withdraw_final.zkey"] as const;
+
 type ZkManifest = {
   files: Record<string, string>;
 };
@@ -22,7 +25,9 @@ async function verifyProvingAssets(): Promise<boolean> {
     if (!manifestRes.ok) return false;
     const manifest = (await manifestRes.json()) as ZkManifest;
 
-    for (const [file, expected] of Object.entries(manifest.files)) {
+    for (const file of PROVING_FILES) {
+      const expected = manifest.files[file];
+      if (!expected) return false;
       const res = await fetch(`/zk/${file}`);
       if (!res.ok) return false;
       const actual = await sha256Hex(await res.arrayBuffer());
