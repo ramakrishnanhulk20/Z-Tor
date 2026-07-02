@@ -185,7 +185,7 @@ function AssetCard({ asset }: { asset: PoolAsset }) {
     <div className="gradient-ring glass-card p-6 md:p-7">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="font-serif text-2xl font-medium tracking-tight">{symbol}</p>
+          <p className="text-2xl font-semibold tracking-[-0.03em]">{symbol}</p>
           <p className="mt-1 text-xs text-muted">
             ERC-7984 confidential {plainLabel} on Sepolia
           </p>
@@ -211,7 +211,7 @@ function AssetCard({ asset }: { asset: PoolAsset }) {
           <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">
             {symbol} (encrypted)
           </p>
-          <p className="mt-2 font-serif text-2xl font-medium text-ink">
+          <p className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-ink">
             {revealBalance && decrypted !== undefined ? (
               formatUnits(decrypted, 6)
             ) : hasEncrypted ? (
@@ -277,7 +277,7 @@ export default function ShieldPage() {
       flush
       title="Shield confidential tokens"
       subtitle="Turn plain test WETH or USDC into Zama confidential tokens (cWETH / cUSDC). Z-Tor pools only accept these encrypted balances — shield here before you deposit."
-      eyebrow="Confidential tokens"
+      eyebrow="Step 01 · Shield"
     >
       <InfoBanner tone="info" title="Sepolia testnet only" className="mb-8">
         <p>

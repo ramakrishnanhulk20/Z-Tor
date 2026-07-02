@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -9,9 +9,7 @@ type Props = {
   subtitle: string;
   children: ReactNode;
   eyebrow?: string;
-  /** Wider layout for stats / shield grids */
   wide?: boolean;
-  /** Render children outside the card wrapper */
   flush?: boolean;
 };
 
@@ -23,30 +21,34 @@ export function PageShell({
   wide = false,
   flush = false,
 }: Props) {
+  const reduced = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-      className={`container-site py-14 md:py-20 ${wide ? "max-w-5xl" : "max-w-2xl"}`}
+      initial={reduced ? { opacity: 1 } : { opacity: 0, y: 24, filter: "blur(8px)" }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      transition={{ duration: reduced ? 0 : 0.75, ease: [0.16, 1, 0.3, 1] }}
+      className={`container-site py-16 md:py-24 ${wide ? "max-w-5xl" : "max-w-2xl"}`}
     >
       <Link
-        href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-muted transition-colors hover:text-ink"
+        href="/app"
+        className="nav-link-muted inline-flex items-center gap-1.5 !px-0 !py-0"
       >
-        <span aria-hidden>←</span> Back to home
+        <span aria-hidden>←</span> App home
       </Link>
 
-      <header className="mt-10 border-b border-line pb-8">
-        {eyebrow && <p className="eyebrow mb-3 text-coral">{eyebrow}</p>}
-        <h1 className="font-serif text-4xl font-medium tracking-tight md:text-5xl">{title}</h1>
-        <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">{subtitle}</p>
+      <header className="mt-8 border-b border-line/80 pb-8 md:mt-10">
+        {eyebrow && <p className="eyebrow text-coral">{eyebrow}</p>}
+        <h1 className="headline-section mt-4">{title}</h1>
+        <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">
+          {subtitle}
+        </p>
       </header>
 
       {flush ? (
-        <div className="mt-10">{children}</div>
+        <div className="mt-10 md:mt-12">{children}</div>
       ) : (
-        <div className="card mt-10 p-6 shadow-card md:p-8">{children}</div>
+        <div className="card mt-10 p-6 shadow-card md:mt-12 md:p-8">{children}</div>
       )}
     </motion.div>
   );

@@ -14,11 +14,11 @@ export function FeaturePanel({ label, title, description, children, aside }: Pro
     <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
       <div>
         <p className="eyebrow text-coral">{label}</p>
-        <h2 className="mt-2 font-serif text-2xl font-medium tracking-tight md:text-3xl">
-          {title}
-        </h2>
+        <h2 className="headline-card mt-3">{title}</h2>
         {description && (
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft">{description}</p>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft md:text-base">
+            {description}
+          </p>
         )}
         <div className="mt-6">{children}</div>
       </div>

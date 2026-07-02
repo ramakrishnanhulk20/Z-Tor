@@ -1,183 +1,124 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
+import { useRef, type CSSProperties } from "react";
+import { HeroAmbientGlow } from "@/components/home/HeroAmbientGlow";
+import { HeroIllustration } from "@/components/home/HeroIllustration";
+import { ScrollDownHint } from "@/components/home/ScrollDownHint";
 import { NETWORK_LABEL } from "@/config/display";
 import { docsPath } from "@/config/site";
-import { ScrollDownHint } from "@/components/home/ScrollDownHint";
 
 const facts = [
   "4 fixed pools",
   "cWETH & cUSDC",
-  "~10 minute privacy delay",
+  "~10 min privacy delay",
   NETWORK_LABEL,
 ];
 
-const ease = [0.22, 1, 0.36, 1] as const;
+const ease = [0.16, 1, 0.3, 1] as const;
 
-function HeroIllustration() {
-  return (
-    <svg
-      viewBox="0 0 480 420"
-      fill="none"
-      aria-hidden
-      className="h-auto w-full max-w-md"
-    >
-      <motion.circle
-        cx="120"
-        cy="280"
-        r="110"
-        fill="#C96442"
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.9, ease }}
-      />
-      <motion.circle
-        cx="120"
-        cy="280"
-        r="64"
-        fill="#F0EEE6"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.7, delay: 0.2, ease }}
-      />
-      <circle cx="120" cy="280" r="10" fill="#181818" />
-
-      <motion.circle
-        cx="370"
-        cy="120"
-        r="78"
-        fill="#D4A27F"
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.9, delay: 0.15, ease }}
-      />
-      <circle cx="370" cy="120" r="10" fill="#181818" />
-
-      <motion.path
-        d="M 140 262 C 200 210 280 190 352 136"
-        stroke="#181818"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeDasharray="6 12"
-        initial={{ pathLength: 1, opacity: 1 }}
-        animate={{ pathLength: [1, 1, 0.35], opacity: [1, 1, 0.25] }}
-        transition={{ duration: 3, repeat: Infinity, repeatDelay: 1.5, ease: "easeInOut" }}
-      />
-
-      <motion.circle
-        cx="246"
-        cy="199"
-        r="26"
-        fill="#FAF9F5"
-        stroke="#DEDAD0"
-        animate={{ scale: [1, 1.06, 1] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <motion.path
-        d="M 238 199 h 16 M 246 191 v 16"
-        stroke="#C96442"
-        strokeWidth="2"
-        strokeLinecap="round"
-        transform="rotate(45 246 199)"
-        animate={{ opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-      />
-
-      <motion.circle
-        cx="430"
-        cy="330"
-        r="6"
-        fill="#C96442"
-        animate={{ y: [0, -6, 0], opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 3, repeat: Infinity, delay: 0.3 }}
-      />
-      <motion.circle
-        cx="60"
-        cy="80"
-        r="6"
-        fill="#D4A27F"
-        animate={{ y: [0, -8, 0], opacity: [0.5, 1, 0.5] }}
-        transition={{ duration: 3.5, repeat: Infinity }}
-      />
-
-      <motion.path
-        d="M 30 140 q 20 -24 40 0"
-        stroke="#181818"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        fill="none"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 1.2, delay: 0.5, ease }}
-      />
-    </svg>
-  );
-}
+/** Matches MarketingHeader height */
+const HEADER_H = "4.25rem";
 
 export function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+  const glowY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 80]);
+  const glowOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const illustrationY = useTransform(scrollYProgress, [0, 1], [0, reduced ? 0 : 40]);
+
   return (
-    <section className="border-b border-line">
-      <div className="container-site grid items-center gap-12 py-20 md:grid-cols-[1.1fr_0.9fr] md:py-28">
+    <section ref={ref} className="relative border-b border-line">
+      {/* Fixed first screen — scroll hint pinned to bottom */}
+      <div
+        className="relative isolate overflow-hidden md:min-h-[calc(100svh-var(--header-h))]"
+        style={
+          {
+            "--header-h": HEADER_H,
+            height: `calc(100dvh - ${HEADER_H})`,
+          } as CSSProperties
+        }
+      >
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease }}
+          aria-hidden
+          style={{ y: glowY, opacity: glowOpacity }}
+          className="pointer-events-none absolute inset-0 z-0"
         >
-          <p className="eyebrow text-coral">Confidential privacy pools</p>
-          <h1 className="mt-5 font-serif text-5xl font-medium leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
-            Move funds without leaving a trail.
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
-            Z-Tor is a privacy tool on {NETWORK_LABEL}. Shield into confidential
-            cUSDC or cWETH, deposit into a shared pool, keep your secret note
-            safe, and withdraw to any address later with no public link back to
-            you.
-          </p>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link href="/app" className="btn-primary">
-              Launch app
-            </Link>
-            <Link href="/app/deposit" className="btn-secondary">
-              Make a deposit
-            </Link>
-            <a
-              href={docsPath("how-it-works")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-secondary"
+          <HeroAmbientGlow />
+        </motion.div>
+
+        {/* Main content — scrolls internally if needed, padded for pinned hint */}
+        <div className="container-site relative z-10 h-full overflow-y-auto overflow-x-hidden pb-[4.5rem] pt-5 md:overflow-visible md:pb-24 md:pt-16 lg:pt-20">
+          <div className="grid items-center gap-3 sm:gap-4 md:min-h-[calc(100svh-var(--header-h)-8rem)] md:grid-cols-[1.05fr_0.95fr] md:gap-12">
+            <motion.div
+              initial={reduced ? { opacity: 1 } : { opacity: 0, y: 32, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: reduced ? 0 : 0.8, ease }}
             >
-              How it works
-            </a>
+              <p className="eyebrow text-coral">Confidential privacy pools</p>
+              <h1 className="headline-hero mt-2 md:mt-6">
+                Move value onchain without exposing the trail.
+              </h1>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-soft sm:mt-4 sm:text-base md:mt-8 md:text-xl">
+                Confidential transfers on {NETWORK_LABEL}. Shield, deposit into
+                fixed pools, and withdraw with no public link.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2 sm:mt-6 md:mt-10 md:gap-4">
+                <Link href="/app" className="btn-primary !px-5 !py-2.5 text-[13px] sm:!py-3 sm:text-sm">
+                  Launch app
+                  <span aria-hidden className="text-base leading-none">
+                    ↗
+                  </span>
+                </Link>
+                <a
+                  href={docsPath("how-it-works")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary !px-5 !py-2.5 text-[13px] sm:!py-3 sm:text-sm"
+                >
+                  How it works
+                </a>
+              </div>
+
+              {/* Key facts inline on mobile — visible without scrolling past hero */}
+              <ul className="mt-4 flex flex-wrap gap-x-3 gap-y-1 md:hidden">
+                {facts.map((fact) => (
+                  <li key={fact} className="text-[10px] font-medium text-muted">
+                    {fact}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+
+            <motion.div
+              style={{ y: illustrationY }}
+              className="flex justify-center md:justify-end"
+            >
+              <HeroIllustration compact />
+            </motion.div>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, ease }}
-          className="hidden justify-center md:flex"
-        >
-          <HeroIllustration />
-        </motion.div>
+        {/* Scroll hint — always pinned to bottom of first screen */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 bg-gradient-to-t from-ivory from-50% via-ivory/80 to-transparent pt-8 md:pt-12">
+          <div className="pointer-events-auto flex justify-center pb-3 md:pb-6">
+            <ScrollDownHint />
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-center pb-8 pt-2 md:pb-10">
-        <ScrollDownHint />
-      </div>
-
-      <div className="border-t border-line bg-paper">
-        <div className="container-site flex flex-wrap items-center justify-center gap-x-10 gap-y-2 py-4">
-          {facts.map((fact, i) => (
-            <motion.span
-              key={fact}
-              className="text-sm text-muted"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 + i * 0.1, duration: 0.5, ease }}
-            >
+      {/* Desktop facts strip — below first screen */}
+      <div className="relative z-10 hidden border-t border-line/80 bg-paper/80 backdrop-blur-sm md:block">
+        <div className="container-site flex flex-wrap items-center justify-center gap-x-10 gap-y-2 py-4 md:py-5">
+          {facts.map((fact) => (
+            <span key={fact} className="text-sm font-medium text-muted">
               {fact}
-            </motion.span>
+            </span>
           ))}
         </div>
       </div>

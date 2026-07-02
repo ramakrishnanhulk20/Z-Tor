@@ -18,7 +18,7 @@ export function ConnectButton() {
         type="button"
         onClick={() => injected && connect({ connector: injected })}
         disabled={isPending || !injected}
-        className="btn-primary !px-4 !py-2"
+        className="btn-primary !rounded-full !px-5 !py-2.5 text-xs font-semibold"
       >
         {isPending ? "Connecting…" : "Connect wallet"}
       </button>
@@ -30,19 +30,19 @@ export function ConnectButton() {
       <button
         type="button"
         onClick={() => switchChain({ chainId: TARGET_CHAIN_ID })}
-        className="btn-coral !px-4 !py-2"
+        className="btn-coral !rounded-full !px-5 !py-2.5 text-xs font-semibold"
       >
-        Switch to Ethereum
+        Switch to Sepolia
       </button>
     );
   }
 
   return (
     <div className="flex items-center gap-2">
-      <span className="hidden rounded-lg border border-line bg-paper px-3 py-2 font-mono text-xs text-ink-soft sm:inline">
+      <span className="hidden rounded-full border border-line bg-paper px-3.5 py-2 font-mono text-xs text-ink-soft sm:inline">
         {address?.slice(0, 6)}…{address?.slice(-4)}
       </span>
-      <button type="button" onClick={() => disconnect()} className="btn-secondary !px-4 !py-2">
+      <button type="button" onClick={() => disconnect()} className="btn-secondary !rounded-full !px-5 !py-2.5 text-xs font-semibold">
         Disconnect
       </button>
     </div>

@@ -6,15 +6,15 @@ type Props = {
 
 export function FlowSteps({ steps, current }: Props) {
   return (
-    <ol className="flex flex-wrap items-center gap-x-2 gap-y-2">
+    <ol className="flex flex-wrap items-center gap-x-3 gap-y-3">
       {steps.map((label, i) => {
         const done = i < current;
         const active = i === current;
         return (
-          <li key={label} className="flex items-center gap-2">
-            {i > 0 && <span aria-hidden className="h-px w-5 bg-line" />}
+          <li key={label} className="flex items-center gap-2.5">
+            {i > 0 && <span aria-hidden className="h-px w-6 bg-line" />}
             <span
-              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-medium ${
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
                 done
                   ? "bg-ink text-paper"
                   : active
@@ -25,7 +25,7 @@ export function FlowSteps({ steps, current }: Props) {
               {done ? "✓" : i + 1}
             </span>
             <span
-              className={`text-xs ${active ? "font-medium text-ink" : "text-muted"}`}
+              className={`text-sm ${active ? "font-semibold text-ink" : "font-medium text-muted"}`}
             >
               {label}
             </span>

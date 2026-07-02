@@ -262,7 +262,7 @@ export default function WithdrawPage() {
     <PageShell
       title="Withdraw"
       subtitle="Paste your secret note and choose where funds should land. For stronger privacy, pick a fresh recipient address and use the relayer so the receiver needs no gas."
-      eyebrow="Step two"
+      eyebrow="Step 03 · Withdraw"
     >
       {phase !== "done" && (
         <div className="mb-8">
@@ -272,9 +272,7 @@ export default function WithdrawPage() {
 
       {phase === "done" ? (
         <div className="gradient-ring glass-card p-6 md:p-8">
-          <p className="font-serif text-xl font-medium tracking-tight">
-            Withdrawal complete.
-          </p>
+          <p className="headline-card">Withdrawal complete.</p>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">
             {confidentialLabel(pool?.asset ?? "USDC")} ({pool?.label}) has been
             sent to the recipient as an encrypted confidential token. The note is
@@ -333,7 +331,7 @@ export default function WithdrawPage() {
             )}
             {networkError && (
               <p className="text-xs text-coral-dark">
-                Can&apos;t reach Ethereum right now. Check your connection and try again.
+                Can&apos;t reach Sepolia right now. Check your connection and try again.
               </p>
             )}
             {poolAddress && !notDeployed && (

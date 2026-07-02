@@ -9,7 +9,7 @@ export default function AppShellLayout({
   return (
     <>
       <AppHeader />
-      <main className="min-h-[calc(100vh-12rem)]">{children}</main>
+      <main id="main-content" className="min-h-[calc(100vh-12rem)]">{children}</main>
       <SiteFooter variant="app" />
     </>
   );

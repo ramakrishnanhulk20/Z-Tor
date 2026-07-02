@@ -7,41 +7,46 @@ import { POOL_TIERS } from "@/config/pools";
 
 export function PoolsShowcase() {
   return (
-    <section id="pools" className="container-site py-20 md:py-28">
+    <section id="pools" className="container-site py-24 md:py-32">
       <ScrollReveal variant="scale">
-        <div className="max-w-2xl">
+        <div className="max-w-3xl">
           <p className="eyebrow text-coral">Pools</p>
-          <h2 className="mt-4 font-serif text-4xl font-medium tracking-tight md:text-5xl">
-            Four fixed tiers. Strongest privacy.
+          <h2 className="headline-section mt-5">
+            Standardized tiers. Maximum anonymity.
           </h2>
-          <p className="mt-5 leading-relaxed text-ink-soft">
-            Every deposit in a tier is identical, so observers cannot tell yours
-            apart from anyone else&apos;s. Pick 0.1 or 1 cWETH, or 100 or 1,000 cUSDC.
+          <p className="mt-6 text-lg leading-relaxed text-ink-soft">
+            Every deposit within a tier is identical, so external observers
+            cannot distinguish yours by amount. Choose 0.1 or 1 cWETH, or 100
+            or 1,000 cUSDC.
           </p>
         </div>
       </ScrollReveal>
 
-      <ScrollLine className="my-10" />
+      <ScrollLine className="my-12" />
 
-      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {POOL_TIERS.map((pool, i) => (
-          <ScrollReveal key={pool.id} delay={i * 0.1} variant={i % 2 ? "fade-right" : "fade-left"}>
+          <ScrollReveal
+            key={pool.id}
+            delay={i * 0.08}
+            variant={i % 2 ? "fade-right" : "fade-left"}
+          >
             <PoolCard pool={pool} href={`/app/deposit?pool=${pool.id}`} />
           </ScrollReveal>
         ))}
       </div>
 
-      <ScrollReveal delay={0.15} variant="blur-up">
-        <div className="gradient-ring mt-10 rounded-2xl bg-coral-soft p-7 md:p-8">
-          <h3 className="font-serif text-2xl font-medium tracking-tight text-coral-dark">
-            Your note is the only key.
+      <ScrollReveal delay={0.12} variant="blur-up">
+        <div className="mt-12 rounded-2xl border border-coral/20 bg-coral-soft p-8 md:p-10">
+          <h3 className="headline-card text-coral-dark">
+            The note is the only credential.
           </h3>
-          <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
-            When you deposit, Z-Tor gives you a secret note. If you lose it, your
-            funds cannot be recovered. Not by you, not by us, not by anyone.
-            Write it down and keep it offline before you confirm a deposit.
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-soft">
+            Upon deposit, Z-Tor issues a secret note. If it is lost, funds
+            cannot be recovered — not by the depositor, not by operators, not
+            by anyone. Record it offline before confirming any transaction.
           </p>
-          <Link href="/app/shield" className="link-arrow mt-4">
+          <Link href="/app/shield" className="link-arrow mt-5 inline-flex">
             Need cUSDC or cWETH? Shield tokens first →
           </Link>
         </div>

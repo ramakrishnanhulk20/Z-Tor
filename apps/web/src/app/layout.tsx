@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Inter, Source_Serif_4 } from "next/font/google";
-import { PhaseBanner } from "@/components/PhaseBanner";
+import { IBM_Plex_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { SkipToContent } from "@/components/SkipToContent";
 import { ToastProvider } from "@/components/toast/ToastProvider";
 import { Web3Provider } from "@/providers/Web3Provider";
 import "./globals.css";
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-sans",
   subsets: ["latin"],
-});
-
-const sourceSerif = Source_Serif_4({
-  variable: "--font-serif",
-  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -22,9 +18,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Z-Tor | Private transfers on Ethereum",
+  title: "Z-Tor | Private transfers on Sepolia",
   description:
-    "Z-Tor is a privacy tool on Ethereum. Shield into confidential cUSDC or cWETH, deposit into a shared pool, keep your secret note, and withdraw later with no public link back to you.",
+    "Z-Tor is a privacy tool on Sepolia testnet. Shield into confidential cUSDC or cWETH, deposit into a shared pool, keep your secret note, and withdraw later with no public link back to you.",
   icons: {
     icon: [
       { url: "/favicon/favicon.ico", sizes: "any" },
@@ -47,12 +43,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${sourceSerif.variable} ${plexMono.variable}`}
+      className={`${plusJakarta.variable} ${plexMono.variable}`}
     >
       <body>
+        <SkipToContent />
         <Web3Provider>
           <ToastProvider>
-            <PhaseBanner />
             {children}
           </ToastProvider>
         </Web3Provider>

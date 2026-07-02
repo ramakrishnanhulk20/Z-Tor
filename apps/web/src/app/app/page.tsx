@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
+import { ConnectWalletBanner } from "@/components/ConnectWalletBanner";
+import { ExternalLink } from "@/components/ExternalLink";
 import { NETWORK_LABEL } from "@/config/display";
-import { DOCS_URL } from "@/config/site";
+import { DOCS_URL, docsPath } from "@/config/site";
 
 const flows = [
   {
@@ -10,7 +14,6 @@ const flows = [
       "Mint Zama test tokens and wrap them into confidential cUSDC or cWETH.",
     href: "/app/shield",
     cta: "Start here",
-    accent: "border-coral bg-coral-soft",
   },
   {
     step: "02",
@@ -19,7 +22,6 @@ const flows = [
       "Pick a fixed pool, save your secret note, and send encrypted tokens.",
     href: "/app/deposit",
     cta: "Deposit",
-    accent: "border-line bg-ivory",
   },
   {
     step: "03",
@@ -28,7 +30,6 @@ const flows = [
       "After the privacy delay, spend your note to any recipient address.",
     href: "/app/withdraw",
     cta: "Withdraw",
-    accent: "border-line bg-ivory",
   },
 ];
 
@@ -47,79 +48,87 @@ const tools = [
 
 export default function AppHomePage() {
   return (
-    <div className="container-site py-12 md:py-16">
-      <div className="max-w-2xl">
-        <p className="eyebrow text-coral">Z-Tor app</p>
-        <h1 className="mt-4 font-serif text-4xl font-medium tracking-tight md:text-5xl">
-          Private transfers on {NETWORK_LABEL}.
+    <div className="container-site py-16 md:py-24">
+      <div className="max-w-3xl border-b border-line/80 pb-10 md:pb-12">
+        <p className="eyebrow text-coral">Application</p>
+        <h1 className="headline-section mt-5">
+          Confidential transfers on {NETWORK_LABEL}.
         </h1>
-        <p className="mt-4 text-lg leading-relaxed text-ink-soft">
+        <p className="mt-6 text-lg leading-relaxed text-ink-soft">
           Connect your wallet, then follow the flow below. Your secret note is
-          the only key to your funds — save it offline before every deposit.
+          the only credential to your funds — record it offline before every
+          deposit.
         </p>
       </div>
 
-      <div className="mt-12 grid gap-4 md:grid-cols-3">
+      <div className="mt-8">
+        <ConnectWalletBanner />
+      </div>
+
+      <div className="mt-12 divide-y divide-line">
         {flows.map((flow) => (
           <Link
             key={flow.href}
             href={flow.href}
-            className={`group rounded-2xl border p-6 transition-shadow duration-200 hover:shadow-md ${flow.accent}`}
+            className="group grid gap-4 py-8 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/40 focus-visible:ring-offset-2 md:grid-cols-[5rem_1fr_auto] md:items-center md:gap-8 md:py-10"
           >
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted">
-              Step {flow.step}
+            <p className="text-sm font-semibold tracking-[0.2em] text-coral">
+              {flow.step}
             </p>
-            <h2 className="mt-3 font-serif text-2xl font-medium tracking-tight">
-              {flow.title}
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-              {flow.description}
-            </p>
-            <span className="link-arrow mt-5 inline-block">{flow.cta} →</span>
+            <div>
+              <h2 className="headline-card">{flow.title}</h2>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft md:text-base">
+                {flow.description}
+              </p>
+            </div>
+            <span className="text-sm font-semibold text-coral transition-colors group-hover:text-coral-dark">
+              {flow.cta} ↗
+            </span>
           </Link>
         ))}
       </div>
 
-      <div className="mt-14">
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">
-          More tools
-        </p>
-        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+      <div className="mt-16">
+        <p className="eyebrow">Additional tools</p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {tools.map((tool) => (
             <Link
               key={tool.href}
               href={tool.href}
-              className="rounded-2xl border border-line bg-paper p-6 transition-colors hover:border-ink/20"
+              className="card group p-7 transition-all hover:-translate-y-0.5 hover:border-coral/25 hover:shadow-lift active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/40 focus-visible:ring-offset-2"
             >
-              <h3 className="font-serif text-xl font-medium tracking-tight">
-                {tool.title}
-              </h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+              <h3 className="headline-card">{tool.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">
                 {tool.description}
               </p>
+              <span className="mt-5 inline-block text-sm font-semibold text-coral group-hover:text-coral-dark">
+                Open ↗
+              </span>
             </Link>
           ))}
         </div>
       </div>
 
-      <div className="mt-14 rounded-2xl border border-coral/30 bg-coral-soft p-6 md:p-8">
-        <h2 className="font-serif text-xl font-medium tracking-tight text-coral-dark">
-          New here?
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ink-soft">
-          Read the{" "}
-          <a
-            href={DOCS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium text-coral underline underline-offset-2"
+      <div className="mt-14 rounded-2xl border border-coral/20 bg-coral-soft p-8 md:p-10">
+        <h2 className="headline-card text-coral-dark">Documentation</h2>
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink-soft md:text-base">
+          Review the{" "}
+          <ExternalLink
+            href={docsPath("how-it-works")}
+            className="font-semibold text-coral underline underline-offset-2"
           >
-            documentation
-          </a>{" "}
-          for a plain-language walkthrough, FAQ, and privacy boundaries before
-          moving test funds.
+            how-it-works guide
+          </ExternalLink>
+          ,{" "}
+          <ExternalLink
+            href={DOCS_URL}
+            className="font-semibold text-coral underline underline-offset-2"
+          >
+            full documentation
+          </ExternalLink>
+          , and privacy boundaries before moving test funds.
         </p>
-        <Link href="/" className="btn-secondary mt-4 inline-flex">
+        <Link href="/" className="btn-secondary mt-6 inline-flex">
           Back to landing
         </Link>
       </div>

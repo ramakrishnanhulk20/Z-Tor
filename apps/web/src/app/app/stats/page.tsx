@@ -11,8 +11,20 @@ import { usePoolAddress } from "@/hooks/usePoolAddress";
 
 const ZERO_HANDLE = `0x${"0".repeat(64)}`;
 
-function shortHex(value: string): string {
-  return `${value.slice(0, 10)}…${value.slice(-8)}`;
+function EncryptedOnChain({ handle }: { handle: string }) {
+  return (
+    <div className="mt-2">
+      <p className="text-sm font-medium text-ink">Encrypted on-chain</p>
+      <details className="mt-2 group">
+        <summary className="cursor-pointer list-none text-xs font-medium text-coral marker:content-none [&::-webkit-details-marker]:hidden">
+          Show ciphertext handle
+        </summary>
+        <code className="mt-2 block break-all rounded-lg bg-paper px-2 py-1.5 font-mono text-[11px] text-ink-soft">
+          {handle}
+        </code>
+      </details>
+    </div>
+  );
 }
 
 function PoolStatsCard({ tier }: { tier: PoolTier }) {
@@ -99,7 +111,7 @@ function PoolStatsCard({ tier }: { tier: PoolTier }) {
     <div className="gradient-ring glass-card p-6">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-serif text-xl font-medium tracking-tight">{tier.label}</p>
+          <p className="text-xl font-semibold tracking-[-0.02em]">{tier.label}</p>
           <p className="mt-1 text-xs text-muted">{tier.asset} fixed pool</p>
         </div>
         <span className="rounded-full bg-ink/5 px-2.5 py-1 font-mono text-xs text-muted">
@@ -121,12 +133,7 @@ function PoolStatsCard({ tier }: { tier: PoolTier }) {
             Pool TVL (encrypted)
           </p>
           {hasPoolBalance ? (
-            <code
-              title={poolBalanceHandle}
-              className="mt-2 block truncate rounded-lg bg-paper px-2 py-1.5 font-mono text-xs text-ink-soft"
-            >
-              {shortHex(poolBalanceHandle)}
-            </code>
+            <EncryptedOnChain handle={poolBalanceHandle} />
           ) : (
             <p className="mt-2 text-sm text-muted">No balance yet</p>
           )}
@@ -137,12 +144,7 @@ function PoolStatsCard({ tier }: { tier: PoolTier }) {
           </p>
           {hasHandle ? (
             <>
-              <code
-                title={handle}
-                className="mt-2 block truncate rounded-lg bg-paper px-2 py-1.5 font-mono text-xs text-ink-soft"
-              >
-                {shortHex(handle)}
-              </code>
+              <EncryptedOnChain handle={handle} />
               {revealedNotes === undefined ? (
                 <button
                   type="button"
@@ -174,7 +176,7 @@ export default function StatsPage() {
       wide
       flush
       title="Encrypted pool statistics"
-      subtitle="Live fhEVM demo: deposit counts are public, but how much liquidity and how many notes remain inside each pool are stored as encrypted handles on Ethereum."
+      subtitle="Live fhEVM demo on Sepolia: deposit counts are public, but pool liquidity and active-note counters stay encrypted on-chain."
       eyebrow="FHE layer"
     >
       <InfoBanner tone="info" title="What you are seeing" className="mb-8">
@@ -189,7 +191,7 @@ export default function StatsPage() {
         ))}
       </div>
 
-      <div className="glass-card mt-10 grid gap-6 p-6 md:grid-cols-3 md:p-8">
+      <div className="glass-card mt-10 grid gap-6 rounded-2xl border border-line/80 p-6 md:grid-cols-3 md:p-8">
         <div>
           <p className="font-medium text-ink">Public vs private</p>
           <p className="mt-2 text-sm leading-relaxed text-ink-soft">

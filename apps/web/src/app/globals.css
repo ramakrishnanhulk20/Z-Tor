@@ -22,31 +22,55 @@ body {
   }
 
   .eyebrow {
-    @apply text-xs font-medium uppercase tracking-[0.14em] text-muted;
+    @apply text-[11px] font-semibold uppercase tracking-[0.18em] text-muted;
+  }
+
+  .headline-hero {
+    @apply text-[1.875rem] font-semibold leading-[1.05] tracking-[-0.03em] sm:text-[2.25rem] md:text-6xl lg:text-[5rem] lg:leading-[1.02];
+  }
+
+  .headline-section {
+    @apply text-3xl font-semibold tracking-[-0.025em] md:text-5xl md:leading-[1.08];
+  }
+
+  .headline-card {
+    @apply text-xl font-semibold tracking-[-0.02em] md:text-2xl;
+  }
+
+  .manifesto {
+    @apply text-[1.75rem] font-medium leading-[1.18] tracking-[-0.025em] md:text-4xl md:leading-[1.15] lg:text-[2.75rem];
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-ink px-6 py-3 text-sm font-medium text-paper transition-colors duration-200 hover:bg-ink/80 disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-3.5 text-sm font-semibold text-paper transition-all duration-200 hover:bg-ink/85 hover:shadow-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-ink/20 px-6 py-3 text-sm font-medium text-ink transition-colors duration-200 hover:border-ink/50 hover:bg-paper disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink/15 px-7 py-3.5 text-sm font-semibold text-ink transition-all duration-200 hover:border-ink/35 hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .btn-coral {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-coral px-6 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-coral-dark disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-coral px-7 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-coral-dark hover:shadow-lift focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-dark/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .nav-link {
+    @apply rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory;
+  }
+
+  .nav-link-muted {
+    @apply nav-link text-muted hover:text-ink;
   }
 
   .card {
-    @apply rounded-2xl border border-line bg-paper;
+    @apply rounded-2xl border border-line/80 bg-paper transition-all duration-300;
   }
 
   .input-field {
-    @apply w-full rounded-xl border border-line bg-paper px-4 py-3 text-sm text-ink transition-colors duration-200 placeholder:text-muted/60 focus:border-ink/40 focus:outline-none;
+    @apply w-full rounded-2xl border border-line bg-paper px-4 py-3.5 text-sm text-ink transition-colors duration-200 placeholder:text-muted/60 focus:border-ink/30 focus:outline-none focus:ring-2 focus:ring-coral/10;
   }
 
   .link-arrow {
-    @apply inline-flex items-center gap-1.5 text-sm font-medium text-coral transition-colors duration-200 hover:text-coral-dark;
+    @apply inline-flex items-center gap-1.5 text-sm font-medium text-coral transition-colors duration-200 hover:text-coral-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/40 focus-visible:ring-offset-2 focus-visible:rounded-sm;
   }
 
   .prose-section p {
@@ -73,10 +97,108 @@ body {
   }
 
   .stat-value {
-    @apply font-serif text-3xl font-medium tracking-tight text-ink;
+    @apply text-3xl font-semibold tracking-[-0.03em] text-ink;
   }
 
   .flow-panel {
     @apply rounded-2xl border border-line bg-ivory/60 p-6 md:p-8;
+  }
+
+  /* Hero ambient glow — Zama-style drifting coral blobs */
+  .hero-glow {
+    position: absolute;
+    border-radius: 50%;
+    will-change: transform;
+    filter: blur(72px);
+  }
+
+  .hero-glow-primary {
+    top: 8%;
+    right: -12%;
+    width: min(58vw, 680px);
+    height: min(58vw, 680px);
+    background: radial-gradient(
+      circle at 40% 40%,
+      rgba(201, 100, 66, 0.55) 0%,
+      rgba(201, 100, 66, 0.18) 42%,
+      transparent 72%
+    );
+    animation: hero-glow-drift-a 22s ease-in-out infinite;
+  }
+
+  .hero-glow-secondary {
+    top: 32%;
+    right: 4%;
+    width: min(42vw, 480px);
+    height: min(42vw, 480px);
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(212, 162, 127, 0.5) 0%,
+      rgba(212, 162, 127, 0.12) 50%,
+      transparent 75%
+    );
+    animation: hero-glow-drift-b 28s ease-in-out infinite;
+  }
+
+  .hero-glow-accent {
+    bottom: 6%;
+    right: 18%;
+    width: min(36vw, 400px);
+    height: min(36vw, 400px);
+    background: radial-gradient(
+      circle at 60% 40%,
+      rgba(168, 75, 45, 0.35) 0%,
+      rgba(201, 100, 66, 0.08) 55%,
+      transparent 78%
+    );
+    animation: hero-glow-drift-c 19s ease-in-out infinite;
+  }
+}
+
+@keyframes hero-glow-drift-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-8%, 12%) scale(1.08);
+  }
+  66% {
+    transform: translate(6%, -8%) scale(0.94);
+  }
+}
+
+@keyframes hero-glow-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(-14%, -10%) scale(1.12);
+  }
+  70% {
+    transform: translate(10%, 14%) scale(0.9);
+  }
+}
+
+@keyframes hero-glow-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(-12%, 8%) scale(1.15);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow {
+    animation: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
   }
 }

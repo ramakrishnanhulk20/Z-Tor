@@ -26,16 +26,16 @@ export function InfoBanner({
 }: Props) {
   return (
     <div
-      className={`rounded-2xl border p-5 text-sm leading-relaxed text-ink-soft ${toneClass[tone]} ${className}`}
+      className={`rounded-2xl border p-5 text-sm leading-relaxed text-ink-soft md:p-6 ${toneClass[tone]} ${className}`}
     >
       {(title || icon) && (
-        <div className="mb-2 flex items-start gap-3">
+        <div className="mb-3 flex items-start gap-3">
           {icon && (
             <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-coral/10 text-coral">
               {icon}
             </span>
           )}
-          {title && <p className="font-medium text-ink">{title}</p>}
+          {title && <p className="font-semibold text-ink">{title}</p>}
         </div>
       )}
       {children}

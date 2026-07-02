@@ -219,7 +219,7 @@ function DepositContent() {
     <PageShell
       title="Deposit"
       subtitle="Pick one of four fixed pools, save your secret note, then deposit confidential cWETH or cUSDC. MetaMask may show Zama's cWETH or cUSDC contract — that token forwards your deposit into the Z-Tor pool."
-      eyebrow="Step one"
+      eyebrow="Step 02 · Deposit"
     >
       <div className="mb-8">
         <FlowSteps steps={FLOW_STEPS} current={stepIndex} />
@@ -241,6 +241,14 @@ function DepositContent() {
 
       {phase === "select" && (
         <>
+          <InfoBanner tone="info" title="First time?" className="mt-6">
+            New users should{" "}
+            <Link href="/app/shield" className="font-semibold text-coral underline underline-offset-2">
+              shield tokens first
+            </Link>
+            , then return here to deposit. You can also mint and shield automatically during
+            deposit if you are short on confidential balance.
+          </InfoBanner>
           {usingRelayerWallet && (
             <div className="mt-6 rounded-xl border border-coral/30 bg-coral-soft p-4 text-sm leading-relaxed text-ink-soft">
               You are connected with the <strong className="font-medium">relayer</strong> wallet.
@@ -264,31 +272,41 @@ function DepositContent() {
             </InfoBanner>
           )}
           <div className="flow-panel mt-6">
-            <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted">
-              What happens when you deposit
-            </p>
-            <ol className="mt-3 space-y-2 text-sm leading-relaxed text-ink-soft">
-              <li>
-                <span className="font-medium text-ink">1. Pool lookup</span> — Z-Tor reads your
-                chosen pool address from the on-chain registry
-              </li>
-              <li>
-                <span className="font-medium text-ink">2. Balance check</span> — read your
-                encrypted cUSDC/cWETH (may ask for a wallet signature to decrypt locally)
-              </li>
-              <li>
-                <span className="font-medium text-ink">3. Top up only if needed</span> — mint
-                and shield test tokens only when you are short
-              </li>
-              <li>
-                <span className="font-medium text-ink">4. Encrypted transfer</span> — call Zama&apos;s
-                cWETH/cUSDC wrapper; it forwards tokens into the Z-Tor pool
-              </li>
-              <li>
-                <span className="font-medium text-ink">5. Amount check</span> — Zama verifies your
-                deposit equals the pool amount, then your note goes live (a second quick confirm)
-              </li>
-            </ol>
+            <details className="group">
+              <summary className="cursor-pointer list-none text-sm font-semibold text-ink marker:content-none [&::-webkit-details-marker]:hidden">
+                <span className="flex items-center justify-between gap-3">
+                  What happens when you deposit
+                  <span
+                    aria-hidden
+                    className="text-muted transition-transform group-open:rotate-180"
+                  >
+                    ▾
+                  </span>
+                </span>
+              </summary>
+              <ol className="mt-4 space-y-2 text-sm leading-relaxed text-ink-soft">
+                <li>
+                  <span className="font-medium text-ink">1. Pool lookup</span> — Z-Tor reads your
+                  chosen pool address from the on-chain registry
+                </li>
+                <li>
+                  <span className="font-medium text-ink">2. Balance check</span> — read your
+                  encrypted cUSDC/cWETH (may ask for a wallet signature to decrypt locally)
+                </li>
+                <li>
+                  <span className="font-medium text-ink">3. Top up only if needed</span> — mint
+                  and shield test tokens only when you are short
+                </li>
+                <li>
+                  <span className="font-medium text-ink">4. Encrypted transfer</span> — call Zama&apos;s
+                  cWETH/cUSDC wrapper; it forwards tokens into the Z-Tor pool
+                </li>
+                <li>
+                  <span className="font-medium text-ink">5. Amount check</span> — Zama verifies your
+                  deposit equals the pool amount, then your note goes live (a second quick confirm)
+                </li>
+              </ol>
+            </details>
           </div>
           <button
             type="button"
@@ -300,7 +318,7 @@ function DepositContent() {
               ? "Connect wallet to continue"
               : notDeployed
                 ? networkError
-                  ? "Can't reach Ethereum. Check your connection"
+                  ? "Can't reach Sepolia. Check your connection"
                   : "Pool not available on this network"
                 : "Generate my secret note"}
           </button>
@@ -340,9 +358,7 @@ function DepositContent() {
       {phase === "done" && generated && (
         <div className="mt-8 space-y-5">
           <div className="rounded-xl border border-line bg-ivory p-5">
-            <p className="font-serif text-xl font-medium tracking-tight">
-              Deposit confirmed.
-            </p>
+            <p className="headline-card">Deposit confirmed.</p>
             <p className="mt-2 text-sm leading-relaxed text-ink-soft">
               Your {pool.label} is in the pool.{" "}
               {countdown !== null && countdown > 0
@@ -391,8 +407,11 @@ export default function DepositPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[40vh] items-center justify-center text-sm text-muted">
-          Loading…
+        <div className="container-site max-w-2xl animate-pulse py-16 md:py-24">
+          <div className="h-4 w-24 rounded bg-line" />
+          <div className="mt-10 h-10 w-3/4 rounded bg-line" />
+          <div className="mt-4 h-20 rounded bg-line/80" />
+          <div className="mt-10 h-64 rounded-2xl bg-line/60" />
         </div>
       }
     >

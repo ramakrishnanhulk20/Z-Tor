@@ -102,7 +102,7 @@ function ToastCard({ toast, onDismiss }: { toast: ToastItem; onDismiss: () => vo
       <div className="flex gap-3 p-4">
         <ToastIcon status={toast.status} />
         <div className="min-w-0 flex-1">
-          <p className="font-serif text-base font-medium tracking-tight text-paper">
+          <p className="text-base font-semibold tracking-[-0.02em] text-paper">
             {toast.title}
           </p>
           {toast.detail && (

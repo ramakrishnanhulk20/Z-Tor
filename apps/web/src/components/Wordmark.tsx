@@ -32,7 +32,7 @@ export function Wordmark({
       />
       {showText && (
         <span
-          className={`font-serif text-2xl font-semibold tracking-tight md:text-3xl ${text}`}
+          className={`text-xl font-bold tracking-[-0.03em] md:text-2xl ${text}`}
         >
           Z-Tor
         </span>

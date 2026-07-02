@@ -25,16 +25,16 @@ export function DepositPoolPicker({ pool, onPoolChange, disabled }: Props) {
               type="button"
               onClick={() => onPoolChange(tier)}
               disabled={disabled}
-              className={`rounded-xl border px-4 py-3 text-left transition-colors duration-200 disabled:opacity-60 ${
+              className={`rounded-2xl border px-4 py-4 text-left transition-all duration-200 disabled:opacity-60 ${
                 selected
-                  ? "border-coral bg-coral-soft"
-                  : "border-line bg-ivory hover:border-ink/30"
+                  ? "border-coral bg-coral-soft shadow-card"
+                  : "border-line bg-paper hover:border-ink/25 hover:shadow-card"
               }`}
             >
-              <span className="block font-serif text-lg font-medium tracking-tight">
+              <span className="block text-lg font-semibold tracking-[-0.02em]">
                 {tier.label}
               </span>
-              <span className="mt-0.5 block text-xs text-muted">
+              <span className="mt-1 block text-xs font-medium text-muted">
                 {confidentialLabel(tier.asset)} pool
               </span>
             </button>
@@ -43,8 +43,8 @@ export function DepositPoolPicker({ pool, onPoolChange, disabled }: Props) {
       </div>
 
       {networkError && (
-        <p className="text-xs text-coral-dark">
-          Can&apos;t reach Ethereum right now. Check your connection and try again.
+        <p className="text-xs font-medium text-coral-dark">
+          Can&apos;t reach Sepolia right now. Check your connection and try again.
         </p>
       )}
 

@@ -155,7 +155,7 @@ export default function DisclosePage() {
       {phase === "done" && report && (
         <div className="mt-8 space-y-5">
           <div className="gradient-ring glass-card p-6 md:p-8">
-            <p className="font-serif text-xl font-medium tracking-tight">
+            <p className="headline-card">
               {spent ? "Full report ready" : "Deposit-only report ready"}
             </p>
             <dl className="mt-6 space-y-4 text-sm">

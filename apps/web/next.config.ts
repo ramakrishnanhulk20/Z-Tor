@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
       { source: "/faq", destination: `${docsUrl}/faq`, permanent: false },
       {
         source: "/how-it-works",
-        destination: `${docsUrl}/how_it_works`,
+        destination: `${docsUrl}/using-z-tor/how_it_works`,
         permanent: false,
       },
     ];

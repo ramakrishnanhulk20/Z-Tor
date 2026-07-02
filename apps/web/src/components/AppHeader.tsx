@@ -32,25 +32,24 @@ export function AppHeader() {
   }, [open]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-line bg-ivory/90 backdrop-blur-md">
-      <div className="container-site flex items-center justify-between gap-4 py-4">
-        <Link href="/app" className="shrink-0">
-          <Wordmark />
+    <header className="sticky top-0 z-50 border-b border-line/50 bg-ivory/75 backdrop-blur-xl">
+      <div className="container-site flex h-[4.25rem] items-center justify-between gap-4">
+        <Link
+          href="/app"
+          className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 focus-visible:ring-offset-2"
+        >
+          <Wordmark size={32} />
         </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           {nav.map((item) => {
-            const active =
-              pathname === item.href ||
-              (item.href === "/app/shield" && pathname === "/app");
+            const active = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm transition-colors duration-200 ${
-                  active
-                    ? "font-medium text-ink underline decoration-coral decoration-2 underline-offset-8"
-                    : "text-muted hover:text-ink"
+                className={`nav-link ${
+                  active ? "bg-ink text-paper" : "text-muted hover:text-ink"
                 }`}
               >
                 {item.label}
@@ -59,24 +58,16 @@ export function AppHeader() {
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <ConnectButton />
           <button
             type="button"
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-paper text-ink lg:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-line/80 bg-paper text-ink md:hidden"
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">Menu</span>
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden
-            >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
               {open ? (
                 <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
               ) : (
@@ -94,17 +85,17 @@ export function AppHeader() {
           <button
             type="button"
             aria-label="Close menu overlay"
-            className="fixed inset-0 top-[73px] z-40 bg-ink/20 lg:hidden"
+            className="fixed inset-0 top-[4.25rem] z-40 bg-ink/20 md:hidden"
             onClick={() => setOpen(false)}
           />
-          <nav className="absolute left-0 right-0 top-full z-50 border-b border-line bg-ivory px-4 py-4 shadow-lg lg:hidden">
+          <nav className="absolute left-0 right-0 top-full z-50 border-b border-line bg-ivory px-4 py-4 shadow-lg md:hidden">
             <ul className="space-y-1">
               <li>
                 <Link
                   href="/app"
-                  className={`block rounded-xl px-4 py-3 text-sm ${
+                  className={`block rounded-2xl px-4 py-3 text-sm font-medium ${
                     pathname === "/app"
-                      ? "bg-coral-soft font-medium text-ink"
+                      ? "bg-ink text-paper"
                       : "text-ink-soft hover:bg-oat"
                   }`}
                 >
@@ -117,9 +108,9 @@ export function AppHeader() {
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className={`block rounded-xl px-4 py-3 text-sm ${
+                      className={`block rounded-2xl px-4 py-3 text-sm font-medium ${
                         active
-                          ? "bg-coral-soft font-medium text-ink"
+                          ? "bg-ink text-paper"
                           : "text-ink-soft hover:bg-oat"
                       }`}
                     >

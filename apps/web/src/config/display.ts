@@ -6,7 +6,8 @@ export const CONFIDENTIAL_SYMBOL: Record<PoolAsset, string> = {
   USDC: "cUSDC",
 };
 
-export const NETWORK_LABEL = "Ethereum";
+/** Primary network label for UI copy. */
+export const NETWORK_LABEL = "Sepolia testnet";
 
 export function confidentialLabel(asset: PoolAsset): string {
   return CONFIDENTIAL_SYMBOL[asset];

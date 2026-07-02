@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { ExternalLink } from "@/components/ExternalLink";
 import { Wordmark } from "@/components/Wordmark";
 
 import { NETWORK_LABEL } from "@/config/display";
@@ -30,89 +31,78 @@ export function SiteFooter({ variant = "marketing" }: FooterProps) {
     { href: DOCS_URL, label: "Documentation", external: true },
     { href: docsPath("how-it-works"), label: "How it works", external: true },
     { href: docsPath("faq"), label: "FAQ", external: true },
-    { href: "/privacy", label: "Privacy", external: false },
+    { href: docsPath("user-guide"), label: "User guide", external: true },
   ];
 
-  const external = [
+  const resourcesLinks = [
     { href: "https://docs.zama.org/protocol", label: "Zama Protocol" },
     { href: "https://faucet.circle.com/", label: "Get test tokens" },
   ];
 
+  const legalLinks = [{ href: "/privacy", label: "Privacy", external: false }];
+
+  const columns = [
+    { title: "Product", links: productLinks.map((l) => ({ ...l, external: false })) },
+    { title: "Learn", links: learnLinks },
+    {
+      title: "Resources",
+      links: resourcesLinks.map((l) => ({ ...l, external: true })),
+    },
+    { title: "Legal", links: legalLinks },
+  ];
+
   return (
-    <footer className="bg-slate text-paper">
-      <div className="container-site grid gap-12 py-16 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
-        <div>
-          <Wordmark tone="light" />
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-paper/60">
-            Private transfers on {NETWORK_LABEL}. Confidential cUSDC and cWETH
-            pools with unlinkable withdrawals.
-          </p>
-        </div>
+    <footer className="border-t border-line bg-slate text-paper">
+      <div className="container-site py-16 md:py-20">
+        <div className="grid gap-12 lg:grid-cols-[1.4fr_2fr] lg:gap-16">
+          <div>
+            <Wordmark tone="light" />
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-paper/60">
+              Confidential transfer infrastructure on {NETWORK_LABEL}. Fixed
+              pools, encrypted balances, and unlinkable withdrawals for
+              institutions that require privacy without sacrificing verifiability.
+            </p>
+          </div>
 
-        <div className="space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-paper/40">
-            Product
-          </p>
-          {productLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="block text-sm text-paper/70 transition-colors hover:text-paper"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-paper/40">
-            Learn
-          </p>
-          {learnLinks.map((link) =>
-            link.external ? (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-sm text-paper/70 transition-colors hover:text-paper"
-              >
-                {link.label}
-              </a>
-            ) : (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block text-sm text-paper/70 transition-colors hover:text-paper"
-              >
-                {link.label}
-              </Link>
-            ),
-          )}
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-paper/40">
-            Resources
-          </p>
-          {external.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-sm text-paper/70 transition-colors hover:text-paper"
-            >
-              {link.label}
-            </a>
-          ))}
+          <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
+            {columns.map((col) => (
+              <div key={col.title}>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-paper/45">
+                  {col.title}
+                </p>
+                <ul className="mt-4 space-y-2.5">
+                  {col.links.map((link) => (
+                    <li key={link.href}>
+                      {"external" in link && link.external ? (
+                        <ExternalLink
+                          href={link.href}
+                          showIcon={false}
+                          className="text-sm text-paper/70 transition-colors hover:text-paper focus-visible:rounded-sm"
+                        >
+                          {link.label}
+                        </ExternalLink>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="text-sm text-paper/70 transition-colors hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kraft/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="border-t border-paper/10 py-5">
-        <p className="container-site text-xs text-paper/40">
-          © 2026 Z-Tor · Private transfers on {NETWORK_LABEL}
-        </p>
+      <div className="border-t border-paper/10">
+        <div className="container-site flex flex-col gap-2 py-6 text-xs text-paper/45 sm:flex-row sm:items-center sm:justify-between">
+          <p>© 2026 Z-Tor</p>
+          <p>Confidential transfers on {NETWORK_LABEL}</p>
+        </div>
       </div>
     </footer>
   );
