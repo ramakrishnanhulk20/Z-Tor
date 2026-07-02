@@ -4,41 +4,79 @@ import { LEGACY_POOL_ADDRESSES } from "@/config/legacy-pools";
 import { computeCommitment, computeNullifierHash, type ParsedNote } from "@/lib/note";
 import { MerkleTree, getPoseidon, toBytes32, type MerklePath } from "@/lib/poseidon";
 
-const LOG_CHUNK_BLOCKS = 49_000n;
+/** Most free Sepolia RPCs reject wide eth_getLogs ranges — keep chunks small. */
+const LOG_CHUNK_BLOCKS = 2_000n;
+const LOG_CHUNK_RETRIES = 3;
 
 const depositEvent = poolAbi.find(
   (item) => item.type === "event" && item.name === "Deposit",
 );
 
-/** Paginate eth_getLogs — many public RPCs reject wide archive ranges. */
+type DepositLog = Awaited<ReturnType<PublicClient["getLogs"]>>[number];
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function fetchLogChunk(
+  client: PublicClient,
+  poolAddress: `0x${string}`,
+  fromBlock: bigint,
+  toBlock: bigint,
+): Promise<DepositLog[]> {
+  if (!depositEvent) throw new Error("Deposit event missing from pool ABI");
+
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < LOG_CHUNK_RETRIES; attempt++) {
+    try {
+      return await client.getLogs({
+        address: poolAddress,
+        event: depositEvent as never,
+        fromBlock,
+        toBlock,
+      });
+    } catch (err) {
+      lastErr = err;
+      if (attempt + 1 < LOG_CHUNK_RETRIES) {
+        await sleep(400 * (attempt + 1));
+      }
+    }
+  }
+  throw lastErr;
+}
+
+/** Paginate eth_getLogs with small windows and retries. */
 export async function fetchDepositLogs(
   client: PublicClient,
   poolAddress: `0x${string}`,
   fromBlock: bigint = DEPLOY_BLOCK,
 ) {
-  if (!depositEvent) throw new Error("Deposit event missing from pool ABI");
-
   const latest = await client.getBlockNumber();
   const start = fromBlock > latest ? latest : fromBlock;
-  const logs: Awaited<ReturnType<PublicClient["getLogs"]>> = [];
+  const logs: DepositLog[] = [];
 
   for (let from = start; from <= latest; from += LOG_CHUNK_BLOCKS) {
     const to = from + LOG_CHUNK_BLOCKS - 1n > latest ? latest : from + LOG_CHUNK_BLOCKS - 1n;
-    const chunk = await client.getLogs({
-      address: poolAddress,
-      event: depositEvent as never,
-      fromBlock: from,
-      toBlock: to,
-    });
+    const chunk = await fetchLogChunk(client, poolAddress, from, to);
     logs.push(...chunk);
   }
 
-  return logs;
+  return dedupeDepositLogs(logs);
+}
+
+export function dedupeDepositLogs(logs: DepositLog[]): DepositLog[] {
+  const seen = new Set<string>();
+  return logs.filter((log) => {
+    const key = `${log.transactionHash}:${log.logIndex}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 /** Insert leaves by on-chain leafIndex order (not sparse-array iteration). */
 export function buildMerkleTreeFromDeposits(
-  logs: Awaited<ReturnType<typeof fetchDepositLogs>>,
+  logs: DepositLog[],
   poseidon: Awaited<ReturnType<typeof getPoseidon>>,
 ): MerkleTree {
   const byIndex = new Map<number, bigint>();
@@ -63,46 +101,29 @@ export function buildMerkleTreeFromDeposits(
   return tree;
 }
 
-export type WithdrawPreparation =
-  | { kind: "not-found" }
-  | { kind: "legacy-pool" }
-  | { kind: "spent" }
-  | { kind: "out-of-sync" }
-  | { kind: "waiting"; readyAt: number }
-  | {
-      kind: "ready";
-      root: bigint;
-      nullifierHash: bigint;
-      path: MerklePath;
-    };
+export type PoolWitnessPayload = {
+  root: `0x${string}`;
+  pathElements: `0x${string}`[];
+  pathIndices: number[];
+  leafIndex: number;
+};
 
-/**
- * Rebuilds the pool's Merkle tree from Deposit events and checks whether the
- * note can be withdrawn yet. Everything secret stays in the browser.
- */
-export async function prepareWithdraw(
+export type PoolWitnessResult =
+  | { status: "ok"; root: bigint; path: MerklePath; leafIndex: number }
+  | { status: "not-found" }
+  | { status: "out-of-sync" };
+
+/** Rebuild the pool tree and locate a commitment (used by the server witness API). */
+export async function resolvePoolWitness(
   client: PublicClient,
   poolAddress: `0x${string}`,
-  note: ParsedNote,
-): Promise<WithdrawPreparation> {
-  const [commitment, nullifierHash] = await Promise.all([
-    computeCommitment(note.nullifier, note.secret),
-    computeNullifierHash(note.nullifier),
-  ]);
-
-  const spent = await client.readContract({
-    address: poolAddress,
-    abi: poolAbi,
-    functionName: "nullifierHashes",
-    args: [toBytes32(nullifierHash)],
-  });
-  if (spent) return { kind: "spent" };
-
-  let logs;
+  commitment: bigint,
+): Promise<PoolWitnessResult> {
+  let logs: DepositLog[];
   try {
     logs = await fetchDepositLogs(client, poolAddress);
   } catch {
-    return { kind: "out-of-sync" };
+    return { status: "out-of-sync" };
   }
 
   const poseidon = await getPoseidon();
@@ -110,7 +131,7 @@ export async function prepareWithdraw(
   try {
     tree = buildMerkleTreeFromDeposits(logs, poseidon);
   } catch {
-    return { kind: "out-of-sync" };
+    return { status: "out-of-sync" };
   }
 
   const [nextIndex, onChainRoot] = await Promise.all([
@@ -128,16 +149,64 @@ export async function prepareWithdraw(
 
   const computedRoot = toBytes32(tree.root());
   if (Number(nextIndex) !== logs.length || onChainRoot !== computedRoot) {
-    return { kind: "out-of-sync" };
+    return { status: "out-of-sync" };
   }
 
-  const index = tree.indexOf(commitment);
-  if (index === -1) {
-    const legacy = await noteOnLegacyPool(client, note.poolId, commitment);
-    return legacy ? { kind: "legacy-pool" } : { kind: "not-found" };
-  }
+  const leafIndex = tree.indexOf(commitment);
+  if (leafIndex === -1) return { status: "not-found" };
 
-  const root = tree.root();
+  return {
+    status: "ok",
+    root: tree.root(),
+    path: tree.path(leafIndex),
+    leafIndex,
+  };
+}
+
+/** Browser helper — uses the server route (archive RPC) when the in-browser scan fails. */
+export async function fetchServerWitness(
+  poolAddress: `0x${string}`,
+  commitment: bigint,
+): Promise<PoolWitnessPayload | null> {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const res = await fetch("/api/pool/witness", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        pool: poolAddress,
+        commitment: toBytes32(commitment),
+      }),
+      signal: AbortSignal.timeout(45_000),
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as PoolWitnessPayload;
+  } catch {
+    return null;
+  }
+}
+
+export type WithdrawPreparation =
+  | { kind: "not-found" }
+  | { kind: "legacy-pool" }
+  | { kind: "spent" }
+  | { kind: "out-of-sync" }
+  | { kind: "waiting"; readyAt: number }
+  | {
+      kind: "ready";
+      root: bigint;
+      nullifierHash: bigint;
+      path: MerklePath;
+    };
+
+async function finalizeWithdrawPrep(
+  client: PublicClient,
+  poolAddress: `0x${string}`,
+  root: bigint,
+  nullifierHash: bigint,
+  path: MerklePath,
+): Promise<WithdrawPreparation> {
   const rootKnown = await client.readContract({
     address: poolAddress,
     abi: poolAbi,
@@ -166,7 +235,60 @@ export async function prepareWithdraw(
     return { kind: "waiting", readyAt };
   }
 
-  return { kind: "ready", root, nullifierHash, path: tree.path(index) };
+  return { kind: "ready", root, nullifierHash, path };
+}
+
+/**
+ * Rebuilds the pool's Merkle tree from Deposit events and checks whether the
+ * note can be withdrawn yet. Secrets stay in the browser; only the commitment
+ * hash is sent to the server witness route when needed.
+ */
+export async function prepareWithdraw(
+  client: PublicClient,
+  poolAddress: `0x${string}`,
+  note: ParsedNote,
+): Promise<WithdrawPreparation> {
+  const [commitment, nullifierHash] = await Promise.all([
+    computeCommitment(note.nullifier, note.secret),
+    computeNullifierHash(note.nullifier),
+  ]);
+
+  const spent = await client.readContract({
+    address: poolAddress,
+    abi: poolAbi,
+    functionName: "nullifierHashes",
+    args: [toBytes32(nullifierHash)],
+  });
+  if (spent) return { kind: "spent" };
+
+  const serverWitness = await fetchServerWitness(poolAddress, commitment);
+  if (serverWitness) {
+    return finalizeWithdrawPrep(
+      client,
+      poolAddress,
+      BigInt(serverWitness.root),
+      nullifierHash,
+      {
+        pathElements: serverWitness.pathElements.map((x) => BigInt(x)),
+        pathIndices: serverWitness.pathIndices,
+      },
+    );
+  }
+
+  const resolved = await resolvePoolWitness(client, poolAddress, commitment);
+  if (resolved.status === "out-of-sync") return { kind: "out-of-sync" };
+  if (resolved.status === "not-found") {
+    const legacy = await noteOnLegacyPool(client, note.poolId, commitment);
+    return legacy ? { kind: "legacy-pool" } : { kind: "not-found" };
+  }
+
+  return finalizeWithdrawPrep(
+    client,
+    poolAddress,
+    resolved.root,
+    nullifierHash,
+    resolved.path,
+  );
 }
 
 async function noteOnLegacyPool(
@@ -177,17 +299,13 @@ async function noteOnLegacyPool(
   const legacy = LEGACY_POOL_ADDRESSES[poolId];
   if (!legacy?.length) return false;
 
-  const depositEvent = poolAbi.find(
-    (item) => item.type === "event" && item.name === "Deposit",
-  );
-
   for (const address of legacy) {
-    const logs = await client.getLogs({
-      address,
-      event: depositEvent as never,
-      fromBlock: 0n,
-      toBlock: "latest",
-    });
+    let logs: DepositLog[];
+    try {
+      logs = await fetchDepositLogs(client, address, 0n);
+    } catch {
+      continue;
+    }
     for (const log of logs) {
       const args = (log as unknown as { args: { commitment: `0x${string}` } }).args;
       if (BigInt(args.commitment) === commitment) return true;

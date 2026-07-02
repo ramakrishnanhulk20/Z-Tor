@@ -24,7 +24,7 @@ import {
   type RelayerInfo,
 } from "@/lib/relayer";
 import { prepareWithdraw } from "@/lib/withdraw";
-import { generateWithdrawProof } from "@/lib/zk";
+import { generateWithdrawProof, verifyWithdrawProofOnChain } from "@/lib/zk";
 import { FHE_GAS_CAP, writeWalletContract } from "@/lib/wallet-write";
 
 type Phase = "idle" | "scanning" | "proving" | "submitting" | "done";
@@ -195,6 +195,28 @@ export default function WithdrawPage() {
           detail: err instanceof Error ? err.message : "Could not build proof.",
         });
         throw err;
+      }
+
+      const verifierAddress = await publicClient.readContract({
+        address: poolAddress,
+        abi: poolAbi,
+        functionName: "verifier",
+      });
+      const proofValid = await verifyWithdrawProofOnChain(
+        publicClient,
+        verifierAddress,
+        proof,
+        prep.root,
+        prep.nullifierHash,
+        recipient as `0x${string}`,
+        relayerAddress,
+        fee,
+      );
+      if (!proofValid) {
+        throw new Error(
+          "The proof did not verify against the on-chain verifier. Refresh the page and try again — " +
+            "the app will rebuild your Merkle witness from the server.",
+        );
       }
 
       setPhase("submitting");

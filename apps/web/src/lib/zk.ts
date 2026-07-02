@@ -1,4 +1,6 @@
-import { encodeAbiParameters } from "viem";
+import { encodeAbiParameters, decodeAbiParameters } from "viem";
+import type { PublicClient } from "viem";
+import { groth16VerifierAbi } from "@/config/contracts";
 import type { MerklePath } from "@/lib/poseidon";
 
 const WASM_PATH = "/zk/withdraw.wasm";
@@ -105,4 +107,33 @@ export async function generateWithdrawProof(
     ],
     [BigInt(proof.pi_c[0]), BigInt(proof.pi_c[1])],
   ]);
+}
+
+/** Local sanity check against the on-chain Groth16 verifier before hitting the relayer. */
+export async function verifyWithdrawProofOnChain(
+  client: PublicClient,
+  verifierAddress: `0x${string}`,
+  proof: `0x${string}`,
+  root: bigint,
+  nullifierHash: bigint,
+  recipient: `0x${string}`,
+  relayer: `0x${string}`,
+  fee: bigint,
+): Promise<boolean> {
+  const [a, b, c] = decodeAbiParameters(
+    [{ type: "uint256[2]" }, { type: "uint256[2][2]" }, { type: "uint256[2]" }],
+    proof,
+  );
+
+  return client.readContract({
+    address: verifierAddress,
+    abi: groth16VerifierAbi,
+    functionName: "verifyProof",
+    args: [
+      a as [bigint, bigint],
+      b as [[bigint, bigint], [bigint, bigint]],
+      c as [bigint, bigint],
+      [root, nullifierHash, BigInt(recipient), BigInt(relayer), fee],
+    ],
+  });
 }

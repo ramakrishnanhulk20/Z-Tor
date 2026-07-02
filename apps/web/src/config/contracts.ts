@@ -168,6 +168,28 @@ export const poolAbi = [
       { name: "fee", type: "uint256", indexed: false },
     ],
   },
+  {
+    type: "function",
+    name: "verifier",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ type: "address" }],
+  },
+] as const;
+
+export const groth16VerifierAbi = [
+  {
+    type: "function",
+    name: "verifyProof",
+    stateMutability: "view",
+    inputs: [
+      { name: "_pA", type: "uint256[2]" },
+      { name: "_pB", type: "uint256[2][2]" },
+      { name: "_pC", type: "uint256[2]" },
+      { name: "_pubSignals", type: "uint256[5]" },
+    ],
+    outputs: [{ type: "bool" }],
+  },
 ] as const;
 
 export const statsAbi = [
